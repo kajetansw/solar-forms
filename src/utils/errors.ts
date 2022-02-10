@@ -1,5 +1,15 @@
-export class FormGroupInvalidKeyError extends Error {
+export class FormControlInvalidKeyError extends Error {
   constructor(formControlName: string) {
-    super(`${formControlName} is not a part of the form group.`);
+    super(`"${formControlName}" form control name does not match any key from the form group.`);
+  }
+}
+
+type InputType = 'text' | 'checkbox';
+
+export class FormControlInvalidTypeError extends Error {
+  constructor(formControlName: string, expectedType: InputType, actualValue: unknown) {
+    super(
+      `"${formControlName}" form control is expected to be of type [${expectedType}] but the value was of type <${typeof actualValue}>.`
+    );
   }
 }
