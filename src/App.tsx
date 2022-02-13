@@ -7,6 +7,7 @@ import isArrayElement from './utils/is-array-element';
 import ToJSON from './components/ToJSON';
 import getRandomNumber from './utils/get-random-number';
 import { getInputValueType } from './utils/input-element.utils';
+import getRandomTeam from './utils/get-random-team';
 
 import './App.css';
 
@@ -17,7 +18,7 @@ declare module 'solid-js' {
     }
 
     interface InputHTMLAttributes<T> {
-      formControlName: string;
+      formControlName?: string;
     }
   }
 }
@@ -54,6 +55,15 @@ function formGroup(
               }
               child.value = newValue;
             }
+            if (getInputValueType(child.type) === 'radio') {
+              const newValue = getFormGroup()[formControlName];
+              if (typeof newValue !== 'string') {
+                throw new FormControlInvalidTypeError(formControlName, 'radio', newValue);
+              }
+              if (child.value === newValue) {
+                child.checked = true;
+              }
+            }
             if (getInputValueType(child.type) === 'number') {
               const newValue = getFormGroup()[formControlName];
               if (typeof newValue !== 'number') {
@@ -70,7 +80,7 @@ function formGroup(
             }
           });
           const onInput = () => {
-            if (getInputValueType(child.type) === 'string') {
+            if (getInputValueType(child.type) === 'string' || getInputValueType(child.type) === 'radio') {
               setFormGroup((s) => ({ ...s, [formControlName]: child.value }));
             }
             if (getInputValueType(child.type) === 'number') {
@@ -99,6 +109,7 @@ const App: Component = () => {
     personalSite: '',
     age: 25,
     skillLevel: 20,
+    team: '',
     acceptTerms: Math.random() < 0.5,
   });
 
@@ -131,6 +142,15 @@ const App: Component = () => {
         <label htmlFor="skillLevel">Skill level</label>
         <input id="skillLevel" type="range" formControlName="skillLevel" />
 
+        <div>Team:</div>
+        <input type="radio" id="radioEngineering" name="team" value="engineering" formControlName="team" />
+        <label htmlFor="radioEngineering">Engineering</label>
+        <input type="radio" id="radioProduct" name="team" value="product" formControlName="team" />
+        <label htmlFor="radioProduct">Product</label>
+        <input type="radio" id="radioTesting" name="team" value="testing" formControlName="team" />
+        <label htmlFor="radioTesting">Testing</label>
+        <br />
+
         <label htmlFor="acceptTerms">Accept terms</label>
         <input id="acceptTerms" type="checkbox" formControlName="acceptTerms" />
       </form>
@@ -143,6 +163,7 @@ const App: Component = () => {
       </button>
       <button onClick={() => setForm((s) => ({ ...s, age: getRandomNumber() }))}>Change age</button>
       <button onClick={() => setForm((s) => ({ ...s, skillLevel: 50 }))}>Change skillLevel</button>
+      <button onClick={() => setForm((s) => ({ ...s, team: getRandomTeam() }))}>Change team</button>
       <button onClick={() => setForm((s) => ({ ...s, acceptTerms: !s.acceptTerms }))}>
         Change acceptTerms
       </button>

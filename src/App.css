@@ -25,7 +25,7 @@ input {
     width: 100%;
 }
 
-input[type=checkbox] {
+input[type=checkbox], input[type=radio] {
     width: 2rem;
 }
 

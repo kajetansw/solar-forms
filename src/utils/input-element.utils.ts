@@ -1,5 +1,5 @@
-export type InputType = 'text' | 'checkbox' | 'number' | 'email' | 'password' | 'tel' | 'url';
-export type InputValueType = 'string' | 'number' | 'boolean' | 'date';
+export type InputType = 'text' | 'checkbox' | 'number' | 'email' | 'password' | 'tel' | 'url' | 'radio';
+export type InputValueType = 'string' | 'number' | 'boolean' | 'date' | 'radio';
 
 export function getInputValueType(inputElementType: HTMLInputElement['type']): InputValueType | undefined {
   switch (inputElementType) {
@@ -14,6 +14,8 @@ export function getInputValueType(inputElementType: HTMLInputElement['type']): I
     case 'number':
     case 'range':
       return 'number';
+    case 'radio':
+      return 'radio';
     default:
       return undefined;
   }
