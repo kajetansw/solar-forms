@@ -12,6 +12,7 @@ export function getInputValueType(inputElementType: HTMLInputElement['type']): I
     case 'checkbox':
       return 'boolean';
     case 'number':
+    case 'range':
       return 'number';
     default:
       return undefined;

@@ -100,6 +100,7 @@ const App: Component = () => {
     phoneNumber: '',
     personalSite: '',
     age: 25,
+    skillLevel: 20,
     acceptTerms: Math.random() < 0.5,
   });
 
@@ -129,6 +130,9 @@ const App: Component = () => {
         <label htmlFor="age">Age</label>
         <input id="age" type="number" formControlName="age" />
 
+        <label htmlFor="skillLevel">Skill level</label>
+        <input id="skillLevel" type="range" formControlName="skillLevel" />
+
         <label htmlFor="acceptTerms">Accept terms</label>
         <input id="acceptTerms" type="checkbox" formControlName="acceptTerms" />
       </form>
@@ -136,10 +140,11 @@ const App: Component = () => {
       <button onClick={() => setForm((s) => ({ ...s, firstName: getRandomString() }))}>
         Change firstName
       </button>
-      <button onClick={() => setForm((s) => ({ ...s, age: getRandomNumber() }))}>Change age</button>
       <button onClick={() => setForm((s) => ({ ...s, phoneNumber: getRandomString() }))}>
         Change phone number
       </button>
+      <button onClick={() => setForm((s) => ({ ...s, age: getRandomNumber() }))}>Change age</button>
+      <button onClick={() => setForm((s) => ({ ...s, skillLevel: 50 }))}>Change skillLevel</button>
       <button onClick={() => setForm((s) => ({ ...s, acceptTerms: !s.acceptTerms }))}>
         Change acceptTerms
       </button>
