@@ -4,6 +4,7 @@ import getFormControlName from './utils/get-form-control-name';
 import { FormControlInvalidKeyError, FormControlInvalidTypeError } from './utils/errors';
 import getRandomString from './utils/get-random-string';
 import isArrayElement from './utils/is-array-element';
+import ToJSON from './components/ToJSON';
 
 import './App.css';
 
@@ -86,9 +87,8 @@ const App: Component = () => {
 
   return (
     <>
-      <p>First name: {form().firstName}</p>
-      <p>Accept terms: {String(form().acceptTerms)}</p>
-      <hr />
+      <ToJSON value={form()} />
+
       <form use:formGroup={[form, setForm]}>
         <label htmlFor="firstName">First name</label>
         <input id="firstName" type="text" formControlName="firstName" />
@@ -97,7 +97,6 @@ const App: Component = () => {
         <input id="acceptTerms" type="checkbox" formControlName="acceptTerms" />
       </form>
 
-      <hr />
       <button onClick={() => setForm((s) => ({ ...s, firstName: getRandomString() }))}>
         Change firstName
       </button>
