@@ -59,9 +59,7 @@ function formGroup(
               if (typeof newValue !== 'number') {
                 throw new FormControlInvalidTypeError(formControlName, 'number', newValue);
               }
-              if (!Number.isNaN(child.valueAsNumber)) {
-                child.valueAsNumber = newValue;
-              }
+              child.valueAsNumber = newValue;
             }
             if (getInputValueType(child.type) === 'boolean') {
               const newValue = getFormGroup()[formControlName];
