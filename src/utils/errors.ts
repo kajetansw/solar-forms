@@ -4,7 +4,7 @@ export class FormControlInvalidKeyError extends Error {
   }
 }
 
-type InputType = 'text' | 'checkbox';
+type InputType = 'text' | 'checkbox' | 'number';
 
 export class FormControlInvalidTypeError extends Error {
   constructor(formControlName: string, expectedType: InputType, actualValue: unknown) {

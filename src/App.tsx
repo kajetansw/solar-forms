@@ -5,6 +5,7 @@ import { FormControlInvalidKeyError, FormControlInvalidTypeError } from './utils
 import getRandomString from './utils/get-random-string';
 import isArrayElement from './utils/is-array-element';
 import ToJSON from './components/ToJSON';
+import getRandomNumber from './utils/get-random-number';
 
 import './App.css';
 
@@ -52,6 +53,15 @@ function formGroup(
               }
               child.value = newValue;
             }
+            if (child.type === 'number') {
+              const newValue = getFormGroup()[formControlName];
+              if (typeof newValue !== 'number') {
+                throw new FormControlInvalidTypeError(formControlName, 'number', newValue);
+              }
+              if (!Number.isNaN(child.valueAsNumber)) {
+                child.valueAsNumber = newValue;
+              }
+            }
             if (child.type === 'checkbox') {
               const newValue = getFormGroup()[formControlName];
               if (typeof newValue !== 'boolean') {
@@ -63,6 +73,11 @@ function formGroup(
           const onInput = () => {
             if (child.type === 'text') {
               setFormGroup((s) => ({ ...s, [formControlName]: child.value }));
+            }
+            if (child.type === 'number') {
+              if (!Number.isNaN(child.valueAsNumber)) {
+                setFormGroup((s) => ({ ...s, [formControlName]: child.valueAsNumber }));
+              }
             }
             if (child.type === 'checkbox') {
               setFormGroup((s) => ({ ...s, [formControlName]: child.checked }));
@@ -78,7 +93,8 @@ function formGroup(
 
 const App: Component = () => {
   const [form, setForm] = createFormGroup({
-    firstName: '',
+    firstName: 'Thomas',
+    age: 25,
     acceptTerms: Math.random() < 0.5,
   });
 
@@ -93,6 +109,9 @@ const App: Component = () => {
         <label htmlFor="firstName">First name</label>
         <input id="firstName" type="text" formControlName="firstName" />
 
+        <label htmlFor="age">Age</label>
+        <input id="age" type="number" formControlName="age" />
+
         <label htmlFor="acceptTerms">Accept terms</label>
         <input id="acceptTerms" type="checkbox" formControlName="acceptTerms" />
       </form>
@@ -100,6 +119,7 @@ const App: Component = () => {
       <button onClick={() => setForm((s) => ({ ...s, firstName: getRandomString() }))}>
         Change firstName
       </button>
+      <button onClick={() => setForm((s) => ({ ...s, age: getRandomNumber() }))}>Change age</button>
       <button onClick={() => setForm((s) => ({ ...s, acceptTerms: !s.acceptTerms }))}>
         Change acceptTerms
       </button>
