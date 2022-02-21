@@ -34,56 +34,56 @@ describe('Input element with type="number" as form control', () => {
   });
 
   it('should init value with the one provided in createFormGroup', async () => {
-    const firstNameEl = await screen.findByTestId('value');
+    const $value = await screen.findByTestId('value');
 
-    expect(firstNameEl.innerHTML).toBe(String(INIT_INPUT_VALUE));
+    expect($value.innerHTML).toBe(String(INIT_INPUT_VALUE));
   });
 
   it('should update form value with int when updating programmatically from outside the form', async () => {
-    const firstNameEl = await screen.findByTestId('value');
+    const $value = await screen.findByTestId('value');
     const buttonEl = await screen.findByTestId('btn-int');
 
     userEvent.click(buttonEl);
 
-    expect(firstNameEl.innerHTML).toBe(String(TEST_INPUT_INT_VALUE));
+    expect($value.innerHTML).toBe(String(TEST_INPUT_INT_VALUE));
   });
 
   it('should update form value with number when updating programmatically from outside the form', async () => {
-    const firstNameEl = await screen.findByTestId('value');
-    const buttonEl = await screen.findByTestId('btn-number');
+    const $value = await screen.findByTestId('value');
+    const $button = await screen.findByTestId('btn-number');
 
-    userEvent.click(buttonEl);
+    userEvent.click($button);
 
-    expect(firstNameEl.innerHTML).toBe(String(TEST_INPUT_NUMBER_VALUE));
+    expect($value.innerHTML).toBe(String(TEST_INPUT_NUMBER_VALUE));
   });
 
   it('should update form value when user types an integer value', async () => {
-    const firstNameEl = await screen.findByTestId('value');
-    const inputEl = await screen.findByTestId('input');
+    const $value = await screen.findByTestId('value');
+    const $input = await screen.findByTestId('input');
 
-    fireEvent.change(inputEl, { target: { value: '' } });
-    userEvent.type(inputEl, String(TEST_INPUT_INT_VALUE));
+    fireEvent.change($input, { target: { value: '' } });
+    userEvent.type($input, String(TEST_INPUT_INT_VALUE));
 
-    expect(firstNameEl.innerHTML).toBe(String(TEST_INPUT_INT_VALUE));
+    expect($value.innerHTML).toBe(String(TEST_INPUT_INT_VALUE));
   });
 
   it('should update form value when user types a numeric value', async () => {
-    const firstNameEl = await screen.findByTestId('value');
-    const inputEl = await screen.findByTestId('input');
+    const $value = await screen.findByTestId('value');
+    const $input = await screen.findByTestId('input');
 
-    fireEvent.change(inputEl, { target: { value: '' } });
-    userEvent.type(inputEl, String(TEST_INPUT_NUMBER_VALUE));
+    fireEvent.change($input, { target: { value: '' } });
+    userEvent.type($input, String(TEST_INPUT_NUMBER_VALUE));
 
-    expect(firstNameEl.innerHTML).toBe(String(TEST_INPUT_NUMBER_VALUE));
+    expect($value.innerHTML).toBe(String(TEST_INPUT_NUMBER_VALUE));
   });
 
   it('should not update the form value when user types a non-numeric value', async () => {
-    const firstNameEl = await screen.findByTestId('value');
-    const inputEl = await screen.findByTestId('input');
+    const $value = await screen.findByTestId('value');
+    const $input = await screen.findByTestId('input');
 
-    fireEvent.change(inputEl, { target: { value: '' } });
-    userEvent.type(inputEl, 'aaaaa');
+    fireEvent.change($input, { target: { value: '' } });
+    userEvent.type($input, 'aaaaa');
 
-    expect(firstNameEl.innerHTML).toBe(String(INIT_INPUT_VALUE));
+    expect($value.innerHTML).toBe(String(INIT_INPUT_VALUE));
   });
 });

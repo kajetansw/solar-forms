@@ -30,26 +30,26 @@ describe('Input element with type="checkbox" as form control', () => {
   });
 
   it('should init value with the one provided in createFormGroup', async () => {
-    const valueEl = await screen.findByTestId('value');
+    const $value = await screen.findByTestId('value');
 
-    expect(valueEl.innerHTML).toBe(String(INIT_INPUT_VALUE));
+    expect($value.innerHTML).toBe(String(INIT_INPUT_VALUE));
   });
 
   it('should update form value when updating programmatically from outside the form', async () => {
-    const valueEl = await screen.findByTestId('value');
-    const buttonEl = await screen.findByTestId('btn');
+    const $value = await screen.findByTestId('value');
+    const $button = await screen.findByTestId('btn');
 
-    userEvent.click(buttonEl);
+    userEvent.click($button);
 
-    expect(valueEl.innerHTML).toBe(String(TEST_INPUT_VALUE));
+    expect($value.innerHTML).toBe(String(TEST_INPUT_VALUE));
   });
 
   it('should update form value when on manual input', async () => {
-    const valueEl = await screen.findByTestId('value');
-    const inputEl = await screen.findByTestId('input');
+    const $value = await screen.findByTestId('value');
+    const $input = await screen.findByTestId('input');
 
-    userEvent.click(inputEl);
+    userEvent.click($input);
 
-    expect(valueEl.innerHTML).toBe(String(TEST_INPUT_VALUE));
+    expect($value.innerHTML).toBe(String(TEST_INPUT_VALUE));
   });
 });

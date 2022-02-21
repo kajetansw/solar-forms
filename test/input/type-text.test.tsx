@@ -30,27 +30,27 @@ describe('Input element with type="text" as form control', () => {
   });
 
   it('should init value with the one provided in createFormGroup', async () => {
-    const firstNameEl = await screen.findByTestId('value');
+    const $value = await screen.findByTestId('value');
 
-    expect(firstNameEl.innerHTML).toBe(INIT_INPUT_VALUE);
+    expect($value.innerHTML).toBe(INIT_INPUT_VALUE);
   });
 
   it('should update form value when updating programmatically from outside the form', async () => {
-    const firstNameEl = await screen.findByTestId('value');
-    const buttonEl = await screen.findByTestId('btn');
+    const $value = await screen.findByTestId('value');
+    const $button = await screen.findByTestId('btn');
 
-    userEvent.click(buttonEl);
+    userEvent.click($button);
 
-    expect(firstNameEl.innerHTML).toBe(TEST_INPUT_VALUE);
+    expect($value.innerHTML).toBe(TEST_INPUT_VALUE);
   });
 
   it('should update form value when on manual input', async () => {
-    const firstNameEl = await screen.findByTestId('value');
-    const inputEl = await screen.findByTestId('input');
+    const $value = await screen.findByTestId('value');
+    const $input = await screen.findByTestId('input');
 
-    fireEvent.change(inputEl, { target: { value: '' } });
-    userEvent.type(inputEl, TEST_INPUT_VALUE);
+    fireEvent.change($input, { target: { value: '' } });
+    userEvent.type($input, TEST_INPUT_VALUE);
 
-    expect(firstNameEl.innerHTML).toBe(TEST_INPUT_VALUE);
+    expect($value.innerHTML).toBe(TEST_INPUT_VALUE);
   });
 });
