@@ -2,29 +2,29 @@ import { createFormGroup, formGroup } from '../../src/lib';
 import { screen, render, fireEvent } from 'solid-testing-library';
 import userEvent from '@testing-library/user-event';
 
-const INIT_INPUT_VALUE = 'qwerty';
-const TEST_INPUT_VALUE = 'asdfg';
+const INIT_INPUT_VALUE = '+12345';
+const TEST_INPUT_VALUE = '+67890';
 
 const TestApp = () => {
   const [form, setForm] = createFormGroup({
-    password: INIT_INPUT_VALUE,
+    phoneNumber: INIT_INPUT_VALUE,
   });
 
   return (
     <>
-      <p data-testid="value">{form().password}</p>
+      <p data-testid="value">{form().phoneNumber}</p>
       <form use:formGroup={[form, setForm]}>
-        <label htmlFor="password">Password</label>
-        <input data-testid="input" id="password" type="password" formControlName="password" />
+        <label htmlFor="phoneNumber">First name</label>
+        <input data-testid="input" id="phoneNumber" type="tel" formControlName="phoneNumber" />
       </form>
-      <button data-testid="btn" onClick={() => setForm({ password: TEST_INPUT_VALUE })}>
+      <button data-testid="btn" onClick={() => setForm({ phoneNumber: TEST_INPUT_VALUE })}>
         Change
       </button>
     </>
   );
 };
 
-describe('Input element with type="password" as form control', () => {
+describe('Input element with type="tel" as form control', () => {
   beforeEach(() => {
     render(() => <TestApp />);
   });
