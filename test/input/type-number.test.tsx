@@ -1,4 +1,4 @@
-import { createFormGroup, formGroup } from '../../src/lib';
+import { createFormGroup, formGroup } from '../../src';
 import { screen, render, fireEvent } from 'solid-testing-library';
 import userEvent from '@testing-library/user-event';
 

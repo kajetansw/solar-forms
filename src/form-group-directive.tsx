@@ -1,14 +1,14 @@
-import type { JSX, Signal } from 'solid-js';
-import type { FormGroupValue } from './types';
+import type { JSX } from 'solid-js';
+import type { FormGroupSignal, FormGroupValue } from './types';
 import { createRenderEffect, onCleanup } from 'solid-js';
-import isArrayElement from '../utils/is-array-element';
-import getFormControlName from '../utils/get-form-control-name';
-import { FormControlInvalidKeyError, FormControlInvalidTypeError } from '../utils/errors';
-import { getInputValueType } from '../utils/input-element.utils';
+import isArrayElement from './utils/is-array-element';
+import getFormControlName from './utils/get-form-control-name';
+import { FormControlInvalidKeyError, FormControlInvalidTypeError } from './utils/errors';
+import { getInputValueType } from './utils/input-element.utils';
 
-export function formGroup(
+export function formGroup<T extends FormGroupValue>(
   el: JSX.FormHTMLAttributes<HTMLFormElement>,
-  formGroupSignal: () => Signal<FormGroupValue>
+  formGroupSignal: () => FormGroupSignal<T>
 ) {
   if (el && isArrayElement(el.children)) {
     const [getFormGroup, setFormGroup] = formGroupSignal();
