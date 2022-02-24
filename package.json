@@ -24,6 +24,7 @@
   },
   "scripts": {
     "build": "rollup -c",
+    "lint": "eslint .",
     "prepublishOnly": "npm run build",
     "test": "jest"
   },
@@ -49,9 +50,10 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/eslint": "^7.28.0",
     "@types/jest": "^27.4.0",
-    "@typescript-eslint/eslint-plugin": "^4.32.0",
-    "@typescript-eslint/parser": "^4.32.0",
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^5.12.1",
     "eslint": "^7.32.0",
+    "eslint-plugin-solid": "^0.4.4",
     "jest": "^27.5.1",
     "prettier": "^2.5.1",
     "rollup": "^2.58.0",
