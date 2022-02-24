@@ -1,4 +1,4 @@
-import { InputType } from './input-element.utils';
+import { InputValueType } from './input-element.utils';
 
 export class FormControlInvalidKeyError extends Error {
   constructor(formControlName: string) {
@@ -7,9 +7,9 @@ export class FormControlInvalidKeyError extends Error {
 }
 
 export class FormControlInvalidTypeError extends Error {
-  constructor(formControlName: string, expectedInputType: InputType, actualValue: unknown) {
+  constructor(formControlName: string, expectedInputType: InputValueType, actualValue: unknown) {
     super(
-      `"${formControlName}" form control is expected to be of type [${expectedInputType}] but the value was of type <${typeof actualValue}>.`
+      `Value of the "${formControlName}" form control is expected to be of type [${expectedInputType}] but the type was [${typeof actualValue}].`
     );
   }
 }

@@ -27,14 +27,14 @@ export function formGroup<T extends FormGroupValue>(
             if (getInputValueType(child.type) === 'string') {
               const newValue = getFormGroup()[formControlName];
               if (typeof newValue !== 'string') {
-                throw new FormControlInvalidTypeError(formControlName, 'text', newValue);
+                throw new FormControlInvalidTypeError(formControlName, 'string', newValue);
               }
               child.value = newValue;
             }
             if (getInputValueType(child.type) === 'radio') {
               const newValue = getFormGroup()[formControlName];
               if (typeof newValue !== 'string') {
-                throw new FormControlInvalidTypeError(formControlName, 'radio', newValue);
+                throw new FormControlInvalidTypeError(formControlName, 'string', newValue);
               }
               if (child.value === newValue) {
                 child.checked = true;
@@ -50,7 +50,7 @@ export function formGroup<T extends FormGroupValue>(
             if (getInputValueType(child.type) === 'boolean') {
               const newValue = getFormGroup()[formControlName];
               if (typeof newValue !== 'boolean') {
-                throw new FormControlInvalidTypeError(formControlName, 'checkbox', newValue);
+                throw new FormControlInvalidTypeError(formControlName, 'boolean', newValue);
               }
               child.checked = newValue;
             }
