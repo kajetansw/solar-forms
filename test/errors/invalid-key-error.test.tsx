@@ -13,7 +13,7 @@ const TestApp = () => {
   return (
     <>
       <form use:formGroup={[form, setForm]}>
-        <label htmlFor="firstName">First name</label>
+        <label for="firstName">First name</label>
         <input data-testid="input" id="firstName" type="text" formControlName={INVALID_FORM_GROUP_KEY} />
       </form>
     </>

@@ -14,7 +14,7 @@ const TestApp = () => {
     <>
       <p data-testid="value">{form().password}</p>
       <form use:formGroup={[form, setForm]}>
-        <label htmlFor="password">Password</label>
+        <label for="password">Password</label>
         <input data-testid="input" id="password" type="password" formControlName="password" />
       </form>
       <button data-testid="btn" onClick={() => setForm({ password: TEST_INPUT_VALUE })}>

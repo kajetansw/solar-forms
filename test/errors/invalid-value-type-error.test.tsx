@@ -11,7 +11,7 @@ const TestApp = () => {
     <>
       <p data-testid="value">{form().firstName}</p>
       <form use:formGroup={[form, setForm]}>
-        <label htmlFor="firstName">First name</label>
+        <label for="firstName">First name</label>
         <input data-testid="input" id="firstName" type="text" formControlName="firstName" />
       </form>
     </>

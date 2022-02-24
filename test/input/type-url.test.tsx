@@ -14,7 +14,7 @@ const TestApp = () => {
     <>
       <p data-testid="value">{form().personalSite}</p>
       <form use:formGroup={[form, setForm]}>
-        <label htmlFor="personalSite">Personal site</label>
+        <label for="personalSite">Personal site</label>
         <input data-testid="input" id="personalSite" type="url" formControlName="personalSite" />
       </form>
       <button data-testid="btn" onClick={() => setForm({ personalSite: TEST_INPUT_VALUE })}>

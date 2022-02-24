@@ -15,7 +15,7 @@ const TestApp = () => {
     <>
       <p data-testid="value">{form().age}</p>
       <form use:formGroup={[form, setForm]}>
-        <label htmlFor="firstName">Age</label>
+        <label for="firstName">Age</label>
         <input data-testid="input" id="firstName" type="number" formControlName="age" />
       </form>
       <button data-testid="btn-int" onClick={() => setForm({ age: TEST_INPUT_INT_VALUE })}>

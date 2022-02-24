@@ -19,13 +19,13 @@ const TestApp = () => {
       <p data-testid="value">{form().team}</p>
       <form use:formGroup={[form, setForm]}>
         <input type="radio" id="radio-engineering" name="team" value="engineering" formControlName="team" />
-        <label htmlFor="radio-engineering">engineering</label>
+        <label for="radio-engineering">engineering</label>
         <input type="radio" id="radio-product" name="team" value="product" formControlName="team" />
-        <label htmlFor="radio-product">product</label>
+        <label for="radio-product">product</label>
         <input type="radio" id="radio-testing" name="team" value="testing" formControlName="team" />
-        <label htmlFor="radio-testing">testing</label>
+        <label for="radio-testing">testing</label>
         <input type="radio" id="radio-design" name="team" value="design" formControlName="team" />
-        <label htmlFor="radio-design">design</label>
+        <label for="radio-design">design</label>
       </form>
       <button data-testid="btn" onClick={() => setForm({ team: randomTeam })}>
         Update
