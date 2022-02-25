@@ -1,4 +1,13 @@
-export type InputType = 'text' | 'checkbox' | 'number' | 'email' | 'password' | 'tel' | 'url' | 'radio';
+export type InputType =
+  | 'text'
+  | 'checkbox'
+  | 'number'
+  | 'email'
+  | 'password'
+  | 'tel'
+  | 'url'
+  | 'radio'
+  | 'date';
 export type InputValueType = 'string' | 'number' | 'boolean' | 'date' | 'radio';
 
 export function getInputValueType(inputElementType: HTMLInputElement['type']): InputValueType | undefined {
@@ -16,6 +25,8 @@ export function getInputValueType(inputElementType: HTMLInputElement['type']): I
       return 'number';
     case 'radio':
       return 'radio';
+    case 'date':
+      return 'date';
     default:
       return undefined;
   }

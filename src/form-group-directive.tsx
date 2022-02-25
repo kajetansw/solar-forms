@@ -5,6 +5,7 @@ import isArrayElement from './utils/is-array-element';
 import getFormControlName from './utils/get-form-control-name';
 import { FormControlInvalidKeyError, FormControlInvalidTypeError } from './utils/errors';
 import { getInputValueType } from './utils/input-element.utils';
+import isDate from './utils/is-date';
 
 export function formGroup<T extends FormGroupValue>(
   el: JSX.FormHTMLAttributes<HTMLFormElement>,
@@ -54,6 +55,13 @@ export function formGroup<T extends FormGroupValue>(
               }
               child.checked = newValue;
             }
+            if (getInputValueType(child.type) === 'date') {
+              const newValue = getFormGroup()[formControlName];
+              if (!isDate(newValue) && newValue !== null) {
+                throw new FormControlInvalidTypeError(formControlName, 'date', newValue);
+              }
+              child.valueAsDate = newValue;
+            }
           });
           const onInput = () => {
             if (getInputValueType(child.type) === 'string' || getInputValueType(child.type) === 'radio') {
@@ -66,6 +74,9 @@ export function formGroup<T extends FormGroupValue>(
             }
             if (getInputValueType(child.type) === 'boolean') {
               setFormGroup((s) => ({ ...s, [formControlName]: child.checked }));
+            }
+            if (getInputValueType(child.type) === 'date') {
+              setFormGroup((s) => ({ ...s, [formControlName]: child.valueAsDate }));
             }
           };
           child.addEventListener('input', onInput);
