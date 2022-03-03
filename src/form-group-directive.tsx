@@ -1,11 +1,11 @@
 import type { JSX } from 'solid-js';
 import type { FormGroupSignal, FormGroupValue } from './types';
 import { createRenderEffect, onCleanup } from 'solid-js';
-import isArrayElement from './utils/is-array-element';
+import isArrayElement from './utils/guards/is-array-element';
 import getFormControlName from './utils/get-form-control-name';
 import { FormControlInvalidKeyError, FormControlInvalidTypeError } from './utils/errors';
 import { getInputValueType } from './utils/input-element.utils';
-import isDate from './utils/is-date';
+import { isBoolean, isDate, isNull, isNumber, isString } from './utils/guards';
 
 export function formGroup<T extends FormGroupValue>(
   el: JSX.FormHTMLAttributes<HTMLFormElement>,
@@ -27,14 +27,14 @@ export function formGroup<T extends FormGroupValue>(
           createRenderEffect(() => {
             if (getInputValueType(child.type) === 'string') {
               const newValue = getFormGroup()[formControlName];
-              if (typeof newValue !== 'string') {
+              if (!isString(newValue)) {
                 throw new FormControlInvalidTypeError(formControlName, 'string', newValue);
               }
               child.value = newValue;
             }
             if (getInputValueType(child.type) === 'radio') {
               const newValue = getFormGroup()[formControlName];
-              if (typeof newValue !== 'string') {
+              if (!isString(newValue)) {
                 throw new FormControlInvalidTypeError(formControlName, 'string', newValue);
               }
               if (child.value === newValue) {
@@ -43,21 +43,21 @@ export function formGroup<T extends FormGroupValue>(
             }
             if (getInputValueType(child.type) === 'number') {
               const newValue = getFormGroup()[formControlName];
-              if (typeof newValue !== 'number') {
+              if (!isNumber(newValue)) {
                 throw new FormControlInvalidTypeError(formControlName, 'number', newValue);
               }
               child.valueAsNumber = newValue;
             }
             if (getInputValueType(child.type) === 'boolean') {
               const newValue = getFormGroup()[formControlName];
-              if (typeof newValue !== 'boolean') {
+              if (!isBoolean(newValue)) {
                 throw new FormControlInvalidTypeError(formControlName, 'boolean', newValue);
               }
               child.checked = newValue;
             }
             if (getInputValueType(child.type) === 'date') {
               const newValue = getFormGroup()[formControlName];
-              if (!isDate(newValue) && newValue !== null) {
+              if (!isDate(newValue) && !isNull(newValue)) {
                 throw new FormControlInvalidTypeError(formControlName, 'date', newValue);
               }
               child.valueAsDate = newValue;
