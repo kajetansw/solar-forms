@@ -63,6 +63,7 @@ export function formGroup<T extends FormGroupValue>(
               child.valueAsDate = newValue;
             }
           });
+
           const onInput = () => {
             if (getInputValueType(child.type) === 'string' || getInputValueType(child.type) === 'radio') {
               setFormGroup((s) => ({ ...s, [formControlName]: child.value }));
