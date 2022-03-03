@@ -17,6 +17,7 @@ export function getInputValueType(inputElementType: HTMLInputElement['type']): I
     case 'password':
     case 'tel':
     case 'url':
+    case 'time':
       return 'string';
     case 'checkbox':
       return 'boolean';
