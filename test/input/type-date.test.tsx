@@ -58,12 +58,15 @@ describe('Input element with type="date" as form control', () => {
     expect($value.innerHTML).toBe(TEST_INPUT_VALUE.toDateString());
   });
 
-  // TODO make this work
+  /* 
+    TODO this does not work because `jest@^27.5.1` id dependent on an old `jest-environment-jsdom` package 
+    that is dependent on an old `jsdom` package that contains a bug 
+  */
   // it('should accept null value (when date provided by user has invalid format)', async () => {
   //   const $value = await screen.findByTestId('value');
   //   const $input = await screen.findByTestId('input');
   //
-  //   fireDateInputEvent($input as HTMLInputElement, '0000-00-00');
+  //   fireDateInputEvent($input as HTMLInputElement, '00');
   //
   //   expect($value.innerHTML).toBe('null');
   // });
