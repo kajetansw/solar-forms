@@ -12,6 +12,15 @@ export function getRandomDateTime(
   return convertToUTC(new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())));
 }
 
+export function getRandomTimeString(): string {
+  const pad = (number: number) => (number < 10 ? '0' : '') + number.toString();
+  const r = Math.floor(Math.random() * 1440);
+  const hh = pad(1 + (Math.floor(r / 60) % 12));
+  const mm = pad(r % 60);
+
+  return hh + ':' + mm;
+}
+
 function convertToDate(dateTime: Date): Date {
   return new Date(dateTime.toDateString());
 }
