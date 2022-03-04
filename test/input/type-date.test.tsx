@@ -2,7 +2,7 @@ import { createFormGroup, formGroup } from '../../src';
 import { screen, render } from 'solid-testing-library';
 import userEvent from '@testing-library/user-event';
 import { getRandomDate } from '../utils/get-random-date';
-import { fireDateInputEvent } from '../utils/fire-event-helpers';
+import { fireInputEvent } from '../utils/fire-event-helpers';
 import { toISODateString } from '../utils/date-format';
 
 const INIT_INPUT_VALUE = getRandomDate();
@@ -53,7 +53,7 @@ describe('Input element with type="date" as form control', () => {
     const $input = await screen.findByTestId('input');
     const testValueString = toISODateString(TEST_INPUT_VALUE);
 
-    fireDateInputEvent($input as HTMLInputElement, testValueString);
+    fireInputEvent($input as HTMLInputElement, testValueString);
 
     expect($value.innerHTML).toBe(TEST_INPUT_VALUE.toDateString());
   });

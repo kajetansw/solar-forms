@@ -62,6 +62,18 @@ export function formGroup<T extends FormGroupValue>(
               }
               child.valueAsDate = newValue;
             }
+            if (getInputValueType(child.type) === 'datetime-local') {
+              const formValue = getFormGroup()[formControlName];
+              if (!isNumber(formValue) && !isString(formValue)) {
+                throw new FormControlInvalidTypeError(formControlName, ['number', 'string'], formValue);
+              }
+              if (isString(formValue)) {
+                child.value = formValue;
+              }
+              if (isNumber(formValue)) {
+                child.valueAsNumber = formValue;
+              }
+            }
           });
 
           const onInput = () => {
@@ -78,6 +90,15 @@ export function formGroup<T extends FormGroupValue>(
             }
             if (getInputValueType(child.type) === 'date') {
               setFormGroup((s) => ({ ...s, [formControlName]: child.valueAsDate }));
+            }
+            if (getInputValueType(child.type) === 'datetime-local') {
+              const formValue = getFormGroup()[formControlName];
+              if (isString(formValue)) {
+                setFormGroup((s) => ({ ...s, [formControlName]: child.value }));
+              }
+              if (isNumber(formValue)) {
+                setFormGroup((s) => ({ ...s, [formControlName]: child.valueAsNumber }));
+              }
             }
           };
           child.addEventListener('input', onInput);

@@ -8,7 +8,7 @@ export type InputType =
   | 'url'
   | 'radio'
   | 'date';
-export type InputValueType = 'string' | 'number' | 'boolean' | 'date' | 'radio';
+export type InputValueType = 'string' | 'number' | 'boolean' | 'date' | 'radio' | 'datetime-local';
 
 export function getInputValueType(inputElementType: HTMLInputElement['type']): InputValueType | undefined {
   switch (inputElementType) {
@@ -28,6 +28,8 @@ export function getInputValueType(inputElementType: HTMLInputElement['type']): I
       return 'radio';
     case 'date':
       return 'date';
+    case 'datetime-local':
+      return 'datetime-local';
     default:
       return undefined;
   }

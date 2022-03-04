@@ -7,9 +7,17 @@ export class FormControlInvalidKeyError extends Error {
 }
 
 export class FormControlInvalidTypeError extends Error {
-  constructor(formControlName: string, expectedInputType: InputValueType, actualValue: unknown) {
+  constructor(
+    formControlName: string,
+    expectedInputType: InputValueType | InputValueType[],
+    actualValue: unknown
+  ) {
+    const expected =
+      typeof expectedInputType === 'string'
+        ? `[${expectedInputType}]`
+        : expectedInputType.map((t) => `[${t}]`).join(' or ');
     super(
-      `Value of the "${formControlName}" form control is expected to be of type [${expectedInputType}] but the type was [${typeof actualValue}].`
+      `Value of the "${formControlName}" form control is expected to be of type ${expected} but the type was [${typeof actualValue}].`
     );
   }
 }
