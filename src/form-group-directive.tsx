@@ -93,7 +93,7 @@ export function formGroup<T extends FormGroupValue>(
             }
             if (getInputValueType(child.type) === 'datetime-local') {
               const formValue = getFormGroup()[formControlName];
-              if (isString(formValue)) {
+              if (isString(formValue) || isNull(formValue)) {
                 setFormGroup((s) => ({ ...s, [formControlName]: child.value }));
               }
               if (isNumber(formValue)) {
