@@ -26,52 +26,57 @@ export function formGroup<T extends FormGroupValue>(
 
           createRenderEffect(() => {
             if (getInputValueType(child.type) === 'string') {
-              const newValue = getFormGroup()[formControlName];
-              if (!isString(newValue)) {
-                throw new FormControlInvalidTypeError(formControlName, 'string', newValue);
+              const formValue = getFormGroup()[formControlName];
+              if (isString(formValue) || isNull(formValue)) {
+                child.value = formValue as string;
+              } else {
+                throw new FormControlInvalidTypeError(formControlName, 'string', formValue);
               }
-              child.value = newValue;
             }
             if (getInputValueType(child.type) === 'radio') {
-              const newValue = getFormGroup()[formControlName];
-              if (!isString(newValue)) {
-                throw new FormControlInvalidTypeError(formControlName, 'string', newValue);
-              }
-              if (child.value === newValue) {
-                child.checked = true;
+              const formValue = getFormGroup()[formControlName];
+              if (isString(formValue) || isNull(formValue)) {
+                child.checked = child.value === formValue;
+              } else {
+                throw new FormControlInvalidTypeError(formControlName, 'string', formValue);
               }
             }
             if (getInputValueType(child.type) === 'number') {
-              const newValue = getFormGroup()[formControlName];
-              if (!isNumber(newValue)) {
-                throw new FormControlInvalidTypeError(formControlName, 'number', newValue);
+              const formValue = getFormGroup()[formControlName];
+              if (isNumber(formValue)) {
+                child.valueAsNumber = formValue;
+              } else if (isNull(formValue)) {
+                child.value = formValue as unknown as string;
+              } else {
+                throw new FormControlInvalidTypeError(formControlName, 'number', formValue);
               }
-              child.valueAsNumber = newValue;
             }
             if (getInputValueType(child.type) === 'boolean') {
-              const newValue = getFormGroup()[formControlName];
-              if (!isBoolean(newValue)) {
-                throw new FormControlInvalidTypeError(formControlName, 'boolean', newValue);
+              const formValue = getFormGroup()[formControlName];
+              if (isBoolean(formValue)) {
+                child.checked = formValue;
+              } else if (isNull(formValue)) {
+                child.checked = false;
+              } else {
+                throw new FormControlInvalidTypeError(formControlName, 'boolean', formValue);
               }
-              child.checked = newValue;
             }
             if (getInputValueType(child.type) === 'date') {
               const newValue = getFormGroup()[formControlName];
-              if (!isDate(newValue) && !isNull(newValue)) {
+              if (isDate(newValue) || isNull(newValue)) {
+                child.valueAsDate = newValue;
+              } else {
                 throw new FormControlInvalidTypeError(formControlName, 'date', newValue);
               }
-              child.valueAsDate = newValue;
             }
             if (getInputValueType(child.type) === 'datetime-local') {
               const formValue = getFormGroup()[formControlName];
-              if (!isNumber(formValue) && !isString(formValue)) {
-                throw new FormControlInvalidTypeError(formControlName, ['number', 'string'], formValue);
-              }
-              if (isString(formValue)) {
-                child.value = formValue;
-              }
-              if (isNumber(formValue)) {
+              if (isString(formValue) || isNull(formValue)) {
+                child.value = formValue as string;
+              } else if (isNumber(formValue)) {
                 child.valueAsNumber = formValue;
+              } else {
+                throw new FormControlInvalidTypeError(formControlName, ['number', 'string'], formValue);
               }
             }
           });
