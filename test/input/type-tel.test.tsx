@@ -2,55 +2,87 @@ import { createFormGroup, formGroup } from '../../src';
 import { screen, render, fireEvent } from 'solid-testing-library';
 import userEvent from '@testing-library/user-event';
 
-const INIT_INPUT_VALUE = '+12345';
-const TEST_INPUT_VALUE = '+67890';
+const INIT_INPUT_VALUE = '+123456';
+const TEST_INPUT_VALUE = '+456789';
+const NULL = String(null);
 
 const TestApp = () => {
   const [form, setForm] = createFormGroup({
-    phoneNumber: INIT_INPUT_VALUE,
+    tel: INIT_INPUT_VALUE as string | null,
+    telNull: null,
   });
 
   return (
     <>
-      <p data-testid="value">{form().phoneNumber}</p>
+      <p data-testid="value">{form().tel}</p>
+      <p data-testid="value-null">{String(form().telNull)}</p>
       <form use:formGroup={[form, setForm]}>
-        <label for="phoneNumber">First name</label>
-        <input data-testid="input" id="phoneNumber" type="tel" formControlName="phoneNumber" />
+        <label for="tel">Email</label>
+        <input data-testid="input" id="tel" type="tel" formControlName="tel" />
+        <label for="telNull">Email null</label>
+        <input data-testid="input-null" id="telNull" type="tel" formControlName="telNull" />
       </form>
-      <button data-testid="btn" onClick={() => setForm({ phoneNumber: TEST_INPUT_VALUE })}>
-        Change
+      <button data-testid="btn" onClick={() => setForm((s) => ({ ...s, tel: TEST_INPUT_VALUE }))}>
+        Change tel
+      </button>
+      <button data-testid="btn-null" onClick={() => setForm((s) => ({ ...s, tel: null }))}>
+        Change tel to null
       </button>
     </>
   );
 };
 
 describe('Input element with type="tel" as form control', () => {
-  beforeEach(() => {
+  let $valueString: HTMLElement;
+  let $valueNull: HTMLElement;
+  let $inputWithString: HTMLInputElement;
+  let $inputWithNull: HTMLInputElement;
+  let $changeToStringButton: HTMLElement;
+  let $changeToNullButton: HTMLElement;
+
+  beforeEach(async () => {
     render(() => <TestApp />);
+
+    $valueString = await screen.findByTestId('value');
+    $valueNull = await screen.findByTestId('value-null');
+    $inputWithString = (await screen.findByTestId('input')) as HTMLInputElement;
+    $inputWithNull = (await screen.findByTestId('input-null')) as HTMLInputElement;
+    $changeToStringButton = await screen.findByTestId('btn');
+    $changeToNullButton = await screen.findByTestId('btn-null');
   });
 
-  it('should init value with the one provided in createFormGroup', async () => {
-    const $value = await screen.findByTestId('value');
+  describe('should init value with the one provided in createFormGroup', () => {
+    it('when value is string', () => {
+      expect($valueString.innerHTML).toBe(INIT_INPUT_VALUE);
+      expect($inputWithString.value).toBe(INIT_INPUT_VALUE);
+    });
 
-    expect($value.innerHTML).toBe(INIT_INPUT_VALUE);
+    it('when value is null', () => {
+      expect($valueNull.innerHTML).toBe(NULL);
+      expect($inputWithNull.value).toBe('');
+    });
   });
 
-  it('should update form value when updating programmatically from outside the form', async () => {
-    const $value = await screen.findByTestId('value');
-    const $button = await screen.findByTestId('btn');
+  describe('should update form value when updating programmatically from outside the form', () => {
+    it('with string', () => {
+      userEvent.click($changeToStringButton);
 
-    userEvent.click($button);
+      expect($valueString.innerHTML).toBe(TEST_INPUT_VALUE);
+      expect($inputWithString.value).toBe(TEST_INPUT_VALUE);
+    });
 
-    expect($value.innerHTML).toBe(TEST_INPUT_VALUE);
+    it('with null', () => {
+      userEvent.click($changeToNullButton);
+
+      expect($valueString.innerHTML === NULL || $valueString.innerHTML === '').toBeTruthy();
+      expect($inputWithString.value).toBe('');
+    });
   });
 
-  it('should update form value when on manual input', async () => {
-    const $value = await screen.findByTestId('value');
-    const $input = await screen.findByTestId('input');
+  it('should update form value when on manual input', () => {
+    fireEvent.change($inputWithString, { target: { value: '' } });
+    userEvent.type($inputWithString, TEST_INPUT_VALUE);
 
-    fireEvent.change($input, { target: { value: '' } });
-    userEvent.type($input, TEST_INPUT_VALUE);
-
-    expect($value.innerHTML).toBe(TEST_INPUT_VALUE);
+    expect($valueString.innerHTML).toBe(TEST_INPUT_VALUE);
   });
 });

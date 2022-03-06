@@ -5,53 +5,79 @@ import { getRandomTimeString } from '../utils/get-random-date';
 
 const INIT_INPUT_VALUE = getRandomTimeString();
 const TEST_INPUT_VALUE = getRandomTimeString();
+const NULL = String(null);
 
 const TestApp = () => {
   const [form, setForm] = createFormGroup({
-    exerciseTime: INIT_INPUT_VALUE,
+    valueString: INIT_INPUT_VALUE as string | null,
+    valueNull: null,
   });
 
   return (
     <>
-      <p data-testid="value">{form().exerciseTime}</p>
+      <p data-testid="value">{form().valueString}</p>
+      <p data-testid="value-null">{String(form().valueNull)}</p>
       <form use:formGroup={[form, setForm]}>
-        <label for="exerciseTime">Exercise time</label>
-        <input data-testid="input" id="exerciseTime" type="time" formControlName="exerciseTime" />
+        <label for="valueString">valueString</label>
+        <input data-testid="input" id="valueString" type="time" formControlName="valueString" />
+        <label for="valueNull">valueNull</label>
+        <input data-testid="input-null" id="valueNull" type="time" formControlName="valueNull" />
       </form>
-      <button data-testid="btn" onClick={() => setForm({ exerciseTime: TEST_INPUT_VALUE })}>
-        Change
+      <button data-testid="btn" onClick={() => setForm({ ...form(), valueString: TEST_INPUT_VALUE })}>
+        Change valueString
+      </button>
+      <button data-testid="btn-null" onClick={() => setForm({ ...form(), valueString: null })}>
+        Change valueString to null
       </button>
     </>
   );
 };
 
 describe('Input element with type="time" as form control', () => {
-  beforeEach(() => {
+  let $valueString: HTMLElement;
+  let $valueNull: HTMLElement;
+  let $inputWithString: HTMLInputElement;
+  let $changeToStringButton: HTMLElement;
+  let $changeToNullButton: HTMLElement;
+
+  beforeEach(async () => {
     render(() => <TestApp />);
+
+    $valueString = await screen.findByTestId('value');
+    $valueNull = await screen.findByTestId('value-null');
+    $inputWithString = (await screen.findByTestId('input')) as HTMLInputElement;
+    $changeToStringButton = await screen.findByTestId('btn');
+    $changeToNullButton = await screen.findByTestId('btn-null');
   });
 
-  it('should init value with the one provided in createFormGroup', async () => {
-    const $value = await screen.findByTestId('value');
+  describe('should init value with the one provided in createFormGroup', () => {
+    it('when value is string', async () => {
+      expect($valueString.innerHTML).toBe(INIT_INPUT_VALUE);
+    });
 
-    expect($value.innerHTML).toBe(INIT_INPUT_VALUE);
+    it('when value is null', async () => {
+      expect($valueNull.innerHTML).toBe(NULL);
+    });
   });
 
-  it('should update form value when updating programmatically from outside the form', async () => {
-    const $value = await screen.findByTestId('value');
-    const $button = await screen.findByTestId('btn');
+  describe('should update form value when updating programmatically from outside the form', () => {
+    it('with string', async () => {
+      userEvent.click($changeToStringButton);
 
-    userEvent.click($button);
+      expect($valueString.innerHTML).toBe(TEST_INPUT_VALUE);
+    });
 
-    expect($value.innerHTML).toBe(TEST_INPUT_VALUE);
+    it('with null', async () => {
+      userEvent.click($changeToNullButton);
+
+      expect($valueString.innerHTML === NULL || $valueString.innerHTML === '').toBeTruthy();
+    });
   });
 
   it('should update form value when on manual input', async () => {
-    const $value = await screen.findByTestId('value');
-    const $input = await screen.findByTestId('input');
+    fireEvent.change($inputWithString, { target: { value: '' } });
+    userEvent.type($inputWithString, TEST_INPUT_VALUE);
 
-    fireEvent.change($input, { target: { value: '' } });
-    userEvent.type($input, TEST_INPUT_VALUE);
-
-    expect($value.innerHTML).toBe(TEST_INPUT_VALUE);
+    expect($valueString.innerHTML).toBe(TEST_INPUT_VALUE);
   });
 });
