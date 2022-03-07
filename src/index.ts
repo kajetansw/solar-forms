@@ -12,5 +12,9 @@ declare module 'solid-js' {
     interface InputHTMLAttributes<T> {
       formControlName?: string;
     }
+
+    interface HTMLAttributes<T> {
+      formGroupName?: string;
+    }
   }
 }
