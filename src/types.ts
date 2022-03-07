@@ -1,7 +1,7 @@
 import { Accessor } from 'solid-js';
 
 export type FormGroupValue = {
-  [key: string]: string | number | boolean | Date | null;
+  [key: string]: string | number | boolean | Date | null | FormGroupValue;
 };
 
 type Dispatch<A> = (value: A) => void;
