@@ -78,11 +78,19 @@ export function formGroup<T extends FormGroupValue>(el: Element, formGroupSignal
                 }
               }
               if (getInputValueType($formControl.type) === 'date') {
-                const newValue = getFormGroup()[formControlName];
-                if (isDate(newValue) || isNull(newValue)) {
-                  $formControl.valueAsDate = newValue;
+                const formValue = getFormGroup()[formControlName];
+                if (isString(formValue) || isNull(formValue)) {
+                  $formControl.value = formValue as string;
+                } else if (isDate(formValue)) {
+                  $formControl.valueAsDate = formValue;
+                } else if (isNumber(formValue)) {
+                  $formControl.valueAsNumber = formValue;
                 } else {
-                  throw new FormControlInvalidTypeError(formControlName, 'date', newValue);
+                  throw new FormControlInvalidTypeError(
+                    formControlName,
+                    ['number', 'string', 'date'],
+                    formValue
+                  );
                 }
               }
               if (getInputValueType($formControl.type) === 'datetime-local') {
@@ -113,7 +121,16 @@ export function formGroup<T extends FormGroupValue>(el: Element, formGroupSignal
                 setFormGroup((s) => ({ ...s, [formControlName]: $formControl.checked }));
               }
               if (getInputValueType($formControl.type) === 'date') {
-                setFormGroup((s) => ({ ...s, [formControlName]: $formControl.valueAsDate }));
+                const formValue = getFormGroup()[formControlName];
+                if (isString(formValue) || isNull(formValue)) {
+                  setFormGroup((s) => ({ ...s, [formControlName]: $formControl.value }));
+                }
+                if (isNumber(formValue)) {
+                  setFormGroup((s) => ({ ...s, [formControlName]: $formControl.valueAsNumber }));
+                }
+                if (isDate(formValue)) {
+                  setFormGroup((s) => ({ ...s, [formControlName]: $formControl.valueAsDate }));
+                }
               }
               if (getInputValueType($formControl.type) === 'datetime-local') {
                 const formValue = getFormGroup()[formControlName];
