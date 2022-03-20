@@ -1,12 +1,12 @@
-import type { FormGroup, FormGroupValue, FormGroupDisabled, CreateFormGroupInput } from './types';
 import { createEffect, createRenderEffect, onCleanup } from 'solid-js';
-import isArrayElement from './utils/guards/is-array-element';
-import getFormControlName from './utils/get-form-control-name';
-import { FormControlInvalidKeyError, FormControlInvalidTypeError } from './utils/errors';
-import { getInputValueType } from './utils/input-element.utils';
-import { isBoolean, isDate, isNull, isNumber, isString } from './utils/guards';
-import { getFormControl } from './utils/get-form-control';
-import getFormGroupName from './utils/get-form-group-name';
+import getFormControlName from '../../utils/get-form-control-name';
+import { FormControlInvalidKeyError, FormControlInvalidTypeError } from '../../utils/errors';
+import { getInputValueType } from '../../utils/input-element.utils';
+import { isArrayElement, isBoolean, isDate, isNull, isNumber, isString } from '../../guards';
+import { getFormControl } from '../../utils/get-form-control';
+import getFormGroupName from '../../utils/get-form-group-name';
+import { CreateFormGroupInput } from '../create-form-group/types';
+import { FormGroup } from './types';
 
 export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroupSignal: () => FormGroup<I>) {
   if (el && isArrayElement(el.children)) {
@@ -20,8 +20,9 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
         formGroup($child, () => {
           const [value, setValue] = formGroupSignal().value;
           const [disabled, setDisabled] = formGroupSignal().disabled;
-          const valueSliceGetter = () => value()[formGroupName] as FormGroupValue;
-          const disabledSliceGetter = () => disabled()[formGroupName] as FormGroupDisabled<FormGroupValue>;
+          // TODO fix types ⬇️
+          const valueSliceGetter = () => value()[formGroupName] as any;
+          const disabledSliceGetter = () => disabled()[formGroupName] as any;
 
           return {
             value: [

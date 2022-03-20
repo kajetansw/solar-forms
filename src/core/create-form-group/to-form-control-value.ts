@@ -1,6 +1,13 @@
-import type { CreateFormGroupInput, ToFormGroupValue } from '../../types';
-import { isFormGroupValueConfigTuple } from '../guards/is-form-group-value-config-tuple';
-import { isRecord } from '../guards';
+import { isFormGroupValueConfigTuple, isRecord } from '../../guards';
+import { CreateFormGroupInput, FormGroupValueConfigTuple } from './types';
+
+export type ToFormGroupValue<T extends CreateFormGroupInput> = {
+  [K in keyof T]: T[K] extends CreateFormGroupInput
+    ? ToFormGroupValue<T[K]>
+    : T[K] extends FormGroupValueConfigTuple
+    ? T[K][0]
+    : T[K];
+};
 
 export function toFormGroupValue<I extends CreateFormGroupInput, V extends ToFormGroupValue<I>>(
   initial: I

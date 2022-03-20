@@ -1,10 +1,10 @@
-import { FormGroupValueConfigTuple } from '../../types';
 import { isString } from './is-string';
 import { isNumber } from './is-number';
 import { isBoolean } from './is-boolean';
 import { isDate } from './is-date';
 import { isNull } from './is-null';
 import { isRecord } from './is-record';
+import { FormGroupValueConfigTuple } from '../core/create-form-group/types';
 
 export function isFormGroupValueConfigTuple(arg: unknown): arg is FormGroupValueConfigTuple {
   if (Array.isArray(arg) && arg.length == 2) {

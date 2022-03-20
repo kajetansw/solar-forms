@@ -1,11 +1,10 @@
 import { createSignal } from 'solid-js';
-import type { CreateFormGroupInput, ToFormGroupValue } from './types';
-import { toFormGroupDisabled, toFormGroupValue } from './utils/form-control';
-import { FormGroup } from './types';
+import { toFormGroupValue } from './to-form-control-value';
+import { toFormGroupDisabled } from './to-form-control-disabled';
+import { CreateFormGroupInput } from './types';
+import { FormGroup } from '../form-group-directive';
 
-export function createFormGroup<I extends CreateFormGroupInput, V extends ToFormGroupValue<I>>(
-  initialValue: I
-): FormGroup<I> {
+export function createFormGroup<I extends CreateFormGroupInput>(initialValue: I): FormGroup<I> {
   const [value, setValue] = createSignal(toFormGroupValue(initialValue)) as FormGroup<I>['value'];
   const [disabled, setDisabled] = createSignal(toFormGroupDisabled(initialValue)) as FormGroup<I>['disabled'];
 
