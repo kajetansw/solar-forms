@@ -1,5 +1,5 @@
-import type { FormGroupSignal, FormGroupValue } from './types';
-import { createRenderEffect, onCleanup } from 'solid-js';
+import type { FormGroup, FormGroupValue, FormGroupDisabled, CreateFormGroupInput } from './types';
+import { createEffect, createRenderEffect, onCleanup } from 'solid-js';
 import isArrayElement from './utils/guards/is-array-element';
 import getFormControlName from './utils/get-form-control-name';
 import { FormControlInvalidKeyError, FormControlInvalidTypeError } from './utils/errors';
@@ -8,26 +8,41 @@ import { isBoolean, isDate, isNull, isNumber, isString } from './utils/guards';
 import { getFormControl } from './utils/get-form-control';
 import getFormGroupName from './utils/get-form-group-name';
 
-export function formGroup<T extends FormGroupValue>(el: Element, formGroupSignal: () => FormGroupSignal<T>) {
+export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroupSignal: () => FormGroup<I>) {
   if (el && isArrayElement(el.children)) {
-    const [getFormGroup, setFormGroup] = formGroupSignal();
-    const formGroupKeys = Object.keys(getFormGroup());
+    const [value, setValue] = formGroupSignal().value;
+    const [getDisabled] = formGroupSignal().disabled;
+    const formGroupKeys = Object.keys(value());
 
     for (const $child of el.children) {
       const formGroupName = getFormGroupName($child);
       if (formGroupName) {
         formGroup($child, () => {
-          const [getter, setter] = formGroupSignal();
-          const formGroupSliceGetter = () => getter()[formGroupName] as FormGroupValue;
-          return [
-            formGroupSliceGetter,
-            (functionOrValue) =>
-              setter(
-                typeof functionOrValue === 'function'
-                  ? { ...getter(), [formGroupName]: { ...functionOrValue(formGroupSliceGetter()) } }
-                  : { ...getter(), [formGroupName]: { ...functionOrValue } }
-              ),
-          ];
+          const [value, setValue] = formGroupSignal().value;
+          const [disabled, setDisabled] = formGroupSignal().disabled;
+          const valueSliceGetter = () => value()[formGroupName] as FormGroupValue;
+          const disabledSliceGetter = () => disabled()[formGroupName] as FormGroupDisabled<FormGroupValue>;
+
+          return {
+            value: [
+              valueSliceGetter,
+              (functionOrValue) =>
+                setValue(
+                  typeof functionOrValue === 'function'
+                    ? { ...value(), [formGroupName]: { ...functionOrValue(valueSliceGetter()) } }
+                    : { ...value(), [formGroupName]: { ...functionOrValue } }
+                ),
+            ],
+            disabled: [
+              disabledSliceGetter,
+              (functionOrValue) =>
+                setDisabled(
+                  typeof functionOrValue === 'function'
+                    ? { ...disabled(), [formGroupName]: { ...functionOrValue(disabledSliceGetter()) } }
+                    : { ...disabled(), [formGroupName]: { ...functionOrValue } }
+                ),
+            ],
+          };
         });
       } else {
         const $formControl = getFormControl($child);
@@ -40,9 +55,16 @@ export function formGroup<T extends FormGroupValue>(el: Element, formGroupSignal
               throw new FormControlInvalidKeyError(formControlName);
             }
 
+            createEffect(() => {
+              const disabledValue = getDisabled()[formControlName];
+              if (isBoolean(disabledValue)) {
+                $formControl.disabled = disabledValue;
+              }
+            });
+
             createRenderEffect(() => {
               if (getInputValueType($formControl.type) === 'string') {
-                const formValue = getFormGroup()[formControlName];
+                const formValue = value()[formControlName];
                 if (isString(formValue) || isNull(formValue)) {
                   $formControl.value = formValue as string;
                 } else {
@@ -50,7 +72,7 @@ export function formGroup<T extends FormGroupValue>(el: Element, formGroupSignal
                 }
               }
               if (getInputValueType($formControl.type) === 'radio') {
-                const formValue = getFormGroup()[formControlName];
+                const formValue = value()[formControlName];
                 if (isString(formValue) || isNull(formValue)) {
                   $formControl.checked = $formControl.value === formValue;
                 } else {
@@ -58,7 +80,7 @@ export function formGroup<T extends FormGroupValue>(el: Element, formGroupSignal
                 }
               }
               if (getInputValueType($formControl.type) === 'number') {
-                const formValue = getFormGroup()[formControlName];
+                const formValue = value()[formControlName];
                 if (isNumber(formValue)) {
                   $formControl.valueAsNumber = formValue;
                 } else if (isNull(formValue)) {
@@ -68,7 +90,7 @@ export function formGroup<T extends FormGroupValue>(el: Element, formGroupSignal
                 }
               }
               if (getInputValueType($formControl.type) === 'boolean') {
-                const formValue = getFormGroup()[formControlName];
+                const formValue = value()[formControlName];
                 if (isBoolean(formValue)) {
                   $formControl.checked = formValue;
                 } else if (isNull(formValue)) {
@@ -78,7 +100,7 @@ export function formGroup<T extends FormGroupValue>(el: Element, formGroupSignal
                 }
               }
               if (getInputValueType($formControl.type) === 'date') {
-                const formValue = getFormGroup()[formControlName];
+                const formValue = value()[formControlName];
                 if (isString(formValue) || isNull(formValue)) {
                   $formControl.value = formValue as string;
                 } else if (isDate(formValue)) {
@@ -94,7 +116,7 @@ export function formGroup<T extends FormGroupValue>(el: Element, formGroupSignal
                 }
               }
               if (getInputValueType($formControl.type) === 'datetime-local') {
-                const formValue = getFormGroup()[formControlName];
+                const formValue = value()[formControlName];
                 if (isString(formValue) || isNull(formValue)) {
                   $formControl.value = formValue as string;
                 } else if (isNumber(formValue)) {
@@ -110,35 +132,35 @@ export function formGroup<T extends FormGroupValue>(el: Element, formGroupSignal
                 getInputValueType($formControl.type) === 'string' ||
                 getInputValueType($formControl.type) === 'radio'
               ) {
-                setFormGroup((s) => ({ ...s, [formControlName]: $formControl.value }));
+                setValue((s) => ({ ...s, [formControlName]: $formControl.value }));
               }
               if (getInputValueType($formControl.type) === 'number') {
                 if (!Number.isNaN($formControl.valueAsNumber)) {
-                  setFormGroup((s) => ({ ...s, [formControlName]: $formControl.valueAsNumber }));
+                  setValue((s) => ({ ...s, [formControlName]: $formControl.valueAsNumber }));
                 }
               }
               if (getInputValueType($formControl.type) === 'boolean') {
-                setFormGroup((s) => ({ ...s, [formControlName]: $formControl.checked }));
+                setValue((s) => ({ ...s, [formControlName]: $formControl.checked }));
               }
               if (getInputValueType($formControl.type) === 'date') {
-                const formValue = getFormGroup()[formControlName];
+                const formValue = value()[formControlName];
                 if (isString(formValue) || isNull(formValue)) {
-                  setFormGroup((s) => ({ ...s, [formControlName]: $formControl.value }));
+                  setValue((s) => ({ ...s, [formControlName]: $formControl.value }));
                 }
                 if (isNumber(formValue)) {
-                  setFormGroup((s) => ({ ...s, [formControlName]: $formControl.valueAsNumber }));
+                  setValue((s) => ({ ...s, [formControlName]: $formControl.valueAsNumber }));
                 }
                 if (isDate(formValue)) {
-                  setFormGroup((s) => ({ ...s, [formControlName]: $formControl.valueAsDate }));
+                  setValue((s) => ({ ...s, [formControlName]: $formControl.valueAsDate }));
                 }
               }
               if (getInputValueType($formControl.type) === 'datetime-local') {
-                const formValue = getFormGroup()[formControlName];
+                const formValue = value()[formControlName];
                 if (isString(formValue) || isNull(formValue)) {
-                  setFormGroup((s) => ({ ...s, [formControlName]: $formControl.value }));
+                  setValue((s) => ({ ...s, [formControlName]: $formControl.value }));
                 }
                 if (isNumber(formValue)) {
-                  setFormGroup((s) => ({ ...s, [formControlName]: $formControl.valueAsNumber }));
+                  setValue((s) => ({ ...s, [formControlName]: $formControl.valueAsNumber }));
                 }
               }
             };

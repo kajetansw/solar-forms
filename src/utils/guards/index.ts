@@ -4,3 +4,4 @@ export * from './is-date';
 export * from './is-null';
 export * from './is-number';
 export * from './is-string';
+export * from './is-record';
