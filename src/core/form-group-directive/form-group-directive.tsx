@@ -7,6 +7,7 @@ import { getFormControl } from '../../utils/get-form-control';
 import getFormGroupName from '../../utils/get-form-group-name';
 import { CreateFormGroupInput } from '../create-form-group/types';
 import { FormGroup } from './types';
+import { toNestedFormGroupSignal } from './to-nested-form-group-signal';
 
 export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroupSignal: () => FormGroup<I>) {
   if (el && isArrayElement(el.children)) {
@@ -17,34 +18,7 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
     for (const $child of el.children) {
       const formGroupName = getFormGroupName($child);
       if (formGroupName) {
-        formGroup($child, () => {
-          const [value, setValue] = formGroupSignal().value;
-          const [disabled, setDisabled] = formGroupSignal().disabled;
-          // TODO fix types ⬇️
-          const valueSliceGetter = () => value()[formGroupName] as any;
-          const disabledSliceGetter = () => disabled()[formGroupName] as any;
-
-          return {
-            value: [
-              valueSliceGetter,
-              (functionOrValue) =>
-                setValue(
-                  typeof functionOrValue === 'function'
-                    ? { ...value(), [formGroupName]: { ...functionOrValue(valueSliceGetter()) } }
-                    : { ...value(), [formGroupName]: { ...functionOrValue } }
-                ),
-            ],
-            disabled: [
-              disabledSliceGetter,
-              (functionOrValue) =>
-                setDisabled(
-                  typeof functionOrValue === 'function'
-                    ? { ...disabled(), [formGroupName]: { ...functionOrValue(disabledSliceGetter()) } }
-                    : { ...disabled(), [formGroupName]: { ...functionOrValue } }
-                ),
-            ],
-          };
-        });
+        formGroup($child, toNestedFormGroupSignal(formGroupSignal, formGroupName));
       } else {
         const $formControl = getFormControl($child);
 
