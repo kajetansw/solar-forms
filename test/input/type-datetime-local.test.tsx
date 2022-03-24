@@ -12,18 +12,19 @@ const TEST_INPUT_NUMBER_VALUE = getRandomDateTime().getTime();
 const NULL = String(null);
 
 const TestApp = () => {
-  const [form, setForm] = createFormGroup({
+  const fg = createFormGroup({
     dateTimeString: INIT_INPUT_STRING_VALUE as null | string,
     dateTimeNumber: INIT_INPUT_NUMBER_VALUE as null | number,
     dateTimeNull: null,
   });
+  const [form, setForm] = fg.value;
 
   return (
     <>
       <p data-testid="value-string">{form().dateTimeString}</p>
       <p data-testid="value-number">{form().dateTimeNumber}</p>
       <p data-testid="value-null">{String(form().dateTimeNull)}</p>
-      <form use:formGroup={[form, setForm]}>
+      <form use:formGroup={fg}>
         <label for="dateTimeString">Date time string</label>
         <input
           data-testid="input-string"

@@ -3,14 +3,13 @@ import { render } from 'solid-testing-library';
 import { FormControlInvalidTypeError } from '../../src/utils/errors';
 
 const TestApp = () => {
-  const [form, setForm] = createFormGroup({
+  const fg = createFormGroup({
     firstName: 100,
   });
 
   return (
     <>
-      <p data-testid="value">{form().firstName}</p>
-      <form use:formGroup={[form, setForm]}>
+      <form use:formGroup={fg}>
         <label for="firstName">First name</label>
         <input data-testid="input" id="firstName" type="text" formControlName="firstName" />
       </form>

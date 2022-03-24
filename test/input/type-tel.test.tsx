@@ -7,16 +7,17 @@ const TEST_INPUT_VALUE = '+456789';
 const NULL = String(null);
 
 const TestApp = () => {
-  const [form, setForm] = createFormGroup({
+  const fg = createFormGroup({
     tel: INIT_INPUT_VALUE as string | null,
     telNull: null,
   });
+  const [form, setForm] = fg.value;
 
   return (
     <>
       <p data-testid="value">{form().tel}</p>
       <p data-testid="value-null">{String(form().telNull)}</p>
-      <form use:formGroup={[form, setForm]}>
+      <form use:formGroup={fg}>
         <label for="tel">Email</label>
         <input data-testid="input" id="tel" type="tel" formControlName="tel" />
         <label for="telNull">Email null</label>

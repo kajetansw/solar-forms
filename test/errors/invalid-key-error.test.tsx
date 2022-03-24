@@ -6,13 +6,13 @@ const FORM_GROUP_KEY = 'firstName';
 const INVALID_FORM_GROUP_KEY = 'company';
 
 const TestApp = () => {
-  const [form, setForm] = createFormGroup({
+  const fg = createFormGroup({
     [FORM_GROUP_KEY]: 'test',
   });
 
   return (
     <>
-      <form use:formGroup={[form, setForm]}>
+      <form use:formGroup={fg}>
         <label for="firstName">First name</label>
         <input data-testid="input" id="firstName" type="text" formControlName={INVALID_FORM_GROUP_KEY} />
       </form>

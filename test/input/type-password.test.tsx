@@ -7,16 +7,17 @@ const TEST_INPUT_VALUE = 'asdfg';
 const NULL = String(null);
 
 const TestApp = () => {
-  const [form, setForm] = createFormGroup({
+  const fg = createFormGroup({
     password: INIT_INPUT_VALUE as string | null,
     passwordNull: null,
   });
+  const [form, setForm] = fg.value;
 
   return (
     <>
       <p data-testid="value">{form().password}</p>
       <p data-testid="value-null">{String(form().passwordNull)}</p>
-      <form use:formGroup={[form, setForm]}>
+      <form use:formGroup={fg}>
         <label for="password">Email</label>
         <input data-testid="input" id="password" type="password" formControlName="password" />
         <label for="passwordNull">Email null</label>

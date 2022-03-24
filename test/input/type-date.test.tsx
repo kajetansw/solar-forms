@@ -13,11 +13,12 @@ const INIT_INPUT_NUMBER_VALUE = getRandomDate().getTime();
 const TEST_INPUT_NUMBER_VALUE = getRandomDate().getTime();
 
 const TestApp = () => {
-  const [form, setForm] = createFormGroup({
+  const fg = createFormGroup({
     valueDate: INIT_INPUT_DATE_VALUE,
     valueString: INIT_INPUT_STRING_VALUE,
     valueNumber: INIT_INPUT_NUMBER_VALUE,
   });
+  const [form, setForm] = fg.value;
   const printDate = (date: Date) => (date === null ? 'null' : date.toDateString());
 
   return (
@@ -26,7 +27,7 @@ const TestApp = () => {
       <p data-testid="value-string">{form().valueString}</p>
       <p data-testid="value-number">{form().valueNumber}</p>
 
-      <form use:formGroup={[form, setForm]}>
+      <form use:formGroup={fg}>
         <label for="valueDate">valueDate</label>
         <input data-testid="input-date" id="valueDate" type="date" formControlName="valueDate" />
 

@@ -7,16 +7,17 @@ const TEST_INPUT_VALUE = 'b@test.com';
 const NULL = String(null);
 
 const TestApp = () => {
-  const [form, setForm] = createFormGroup({
+  const fg = createFormGroup({
     email: INIT_INPUT_VALUE as string | null,
     emailNull: null,
   });
+  const [form, setForm] = fg.value;
 
   return (
     <>
       <p data-testid="value">{form().email}</p>
       <p data-testid="value-null">{String(form().emailNull)}</p>
-      <form use:formGroup={[form, setForm]}>
+      <form use:formGroup={fg}>
         <label for="email">Email</label>
         <input data-testid="input" id="email" type="email" formControlName="email" />
         <label for="emailNull">Email null</label>

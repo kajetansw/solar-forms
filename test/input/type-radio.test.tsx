@@ -11,14 +11,15 @@ const NULL = String(null);
 let randomTeam = 'product';
 
 const TestApp = () => {
-  const [form, setForm] = createFormGroup({
+  const fg = createFormGroup({
     team: 'product' as string | null,
   });
+  const [form, setForm] = fg.value;
 
   return (
     <>
       <p data-testid="value">{form().team}</p>
-      <form use:formGroup={[form, setForm]}>
+      <form use:formGroup={fg}>
         <input type="radio" id="radio-engineering" name="team" value="engineering" formControlName="team" />
         <label for="radio-engineering">engineering</label>
         <input type="radio" id="radio-product" name="team" value="product" formControlName="team" />

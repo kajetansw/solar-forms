@@ -7,16 +7,17 @@ const TEST_INPUT_VALUE = 'http://url2.com';
 const NULL = String(null);
 
 const TestApp = () => {
-  const [form, setForm] = createFormGroup({
+  const fg = createFormGroup({
     url: INIT_INPUT_VALUE as string | null,
     urlNull: null,
   });
+  const [form, setForm] = fg.value;
 
   return (
     <>
       <p data-testid="value">{form().url}</p>
       <p data-testid="value-null">{String(form().urlNull)}</p>
-      <form use:formGroup={[form, setForm]}>
+      <form use:formGroup={fg}>
         <label for="url">Email</label>
         <input data-testid="input" id="url" type="url" formControlName="url" />
         <label for="urlNull">Email null</label>

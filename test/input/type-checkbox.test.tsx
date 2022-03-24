@@ -7,16 +7,17 @@ const TEST_INPUT_VALUE = true;
 const NULL = String(null);
 
 const TestApp = () => {
-  const [form, setForm] = createFormGroup({
+  const fg = createFormGroup({
     valueBoolean: INIT_INPUT_VALUE as boolean | null,
     valueNull: null,
   });
+  const [form, setForm] = fg.value;
 
   return (
     <>
       <p data-testid="value">{String(form().valueBoolean)}</p>
       <p data-testid="value-null">{String(form().valueNull)}</p>
-      <form use:formGroup={[form, setForm]}>
+      <form use:formGroup={fg}>
         <label>Value boolean</label>
         <input type="checkbox" formControlName="valueBoolean" data-testid="input" />
         <label>Value null</label>

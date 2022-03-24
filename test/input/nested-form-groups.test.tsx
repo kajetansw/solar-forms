@@ -10,7 +10,7 @@ const INIT_INPUT_NUMBER_VALUE = getRandomNumber();
 const TEST_INPUT_NUMBER_VALUE = getRandomNumber();
 
 const TestApp = () => {
-  const [form, setForm] = createFormGroup({
+  const fg = createFormGroup({
     value: {
       nested1: INIT_INPUT_STRING_VALUE,
       nested2: {
@@ -18,13 +18,14 @@ const TestApp = () => {
       },
     },
   });
+  const [form, setForm] = fg.value;
 
   return (
     <>
       <p data-testid="value-nested1">{form().value.nested1}</p>
       <p data-testid="value-nested21">{form().value.nested2.nested21}</p>
 
-      <form use:formGroup={[form, setForm]}>
+      <form use:formGroup={fg}>
         <div formGroupName="value">
           <label for="value">First name</label>
           <input data-testid="input-nested1" id="value" type="text" formControlName="nested1" />

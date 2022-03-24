@@ -7,16 +7,17 @@ const TEST_INPUT_INT_VALUE = 66;
 const NULL = String(null);
 
 const TestApp = () => {
-  const [form, setForm] = createFormGroup({
+  const fg = createFormGroup({
     valueNumber: INIT_INPUT_VALUE as number | null,
     valueNull: null,
   });
+  const [form, setForm] = fg.value;
 
   return (
     <>
       <p data-testid="value">{form().valueNumber}</p>
       <p data-testid="value-null">{String(form().valueNull)}</p>
-      <form use:formGroup={[form, setForm]}>
+      <form use:formGroup={fg}>
         <label for="valueNumber">valueNumber</label>
         <input data-testid="input" id="valueNumber" type="range" formControlName="valueNumber" />
         <label for="valueNull">valueNull</label>
