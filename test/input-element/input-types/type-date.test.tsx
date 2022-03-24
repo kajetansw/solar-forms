@@ -1,9 +1,9 @@
-import { createFormGroup, formGroup } from '../../src';
+import { createFormGroup, formGroup } from '../../../src';
 import { screen, render } from 'solid-testing-library';
 import userEvent from '@testing-library/user-event';
-import { getRandomDate } from '../utils/get-random-date';
-import { fireInputEvent } from '../utils/fire-event-helpers';
-import { toISODate } from '../utils/date-format';
+import { getRandomDate } from '../../utils/get-random-date';
+import { fireInputEvent } from '../../utils/fire-event-helpers';
+import { toISODate } from '../../utils/date-format';
 
 const INIT_INPUT_DATE_VALUE = getRandomDate();
 const TEST_INPUT_DATE_VALUE = getRandomDate();

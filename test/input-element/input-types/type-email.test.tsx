@@ -1,39 +1,39 @@
-import { createFormGroup, formGroup } from '../../src';
+import { createFormGroup, formGroup } from '../../../src';
 import { screen, render, fireEvent } from 'solid-testing-library';
 import userEvent from '@testing-library/user-event';
 
-const INIT_INPUT_VALUE = 'qwerty';
-const TEST_INPUT_VALUE = 'asdfg';
+const INIT_INPUT_VALUE = 'a@test.com';
+const TEST_INPUT_VALUE = 'b@test.com';
 const NULL = String(null);
 
 const TestApp = () => {
   const fg = createFormGroup({
-    password: INIT_INPUT_VALUE as string | null,
-    passwordNull: null,
+    email: INIT_INPUT_VALUE as string | null,
+    emailNull: null,
   });
   const [form, setForm] = fg.value;
 
   return (
     <>
-      <p data-testid="value">{form().password}</p>
-      <p data-testid="value-null">{String(form().passwordNull)}</p>
+      <p data-testid="value">{form().email}</p>
+      <p data-testid="value-null">{String(form().emailNull)}</p>
       <form use:formGroup={fg}>
-        <label for="password">Email</label>
-        <input data-testid="input" id="password" type="password" formControlName="password" />
-        <label for="passwordNull">Email null</label>
-        <input data-testid="input-null" id="passwordNull" type="password" formControlName="passwordNull" />
+        <label for="email">Email</label>
+        <input data-testid="input" id="email" type="email" formControlName="email" />
+        <label for="emailNull">Email null</label>
+        <input data-testid="input-null" id="emailNull" type="email" formControlName="emailNull" />
       </form>
-      <button data-testid="btn" onClick={() => setForm((s) => ({ ...s, password: TEST_INPUT_VALUE }))}>
-        Change password
+      <button data-testid="btn" onClick={() => setForm((s) => ({ ...s, email: TEST_INPUT_VALUE }))}>
+        Change email
       </button>
-      <button data-testid="btn-null" onClick={() => setForm((s) => ({ ...s, password: null }))}>
-        Change password to null
+      <button data-testid="btn-null" onClick={() => setForm((s) => ({ ...s, email: null }))}>
+        Change email to null
       </button>
     </>
   );
 };
 
-describe('Input element with type="password" as form control', () => {
+describe('Input element with type="email" as form control', () => {
   let $valueString: HTMLElement;
   let $valueNull: HTMLElement;
   let $inputWithString: HTMLInputElement;

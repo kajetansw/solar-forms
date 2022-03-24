@@ -1,39 +1,39 @@
-import { createFormGroup, formGroup } from '../../src';
+import { createFormGroup, formGroup } from '../../../src';
 import { screen, render, fireEvent } from 'solid-testing-library';
 import userEvent from '@testing-library/user-event';
 
-const INIT_INPUT_VALUE = 'Thomas' as string | null;
-const TEST_INPUT_VALUE = 'test';
+const INIT_INPUT_VALUE = 'qwerty';
+const TEST_INPUT_VALUE = 'asdfg';
 const NULL = String(null);
 
 const TestApp = () => {
   const fg = createFormGroup({
-    valueString: INIT_INPUT_VALUE,
-    valueNull: null,
+    password: INIT_INPUT_VALUE as string | null,
+    passwordNull: null,
   });
   const [form, setForm] = fg.value;
 
   return (
     <>
-      <p data-testid="value">{form().valueString}</p>
-      <p data-testid="value-null">{String(form().valueNull)}</p>
+      <p data-testid="value">{form().password}</p>
+      <p data-testid="value-null">{String(form().passwordNull)}</p>
       <form use:formGroup={fg}>
-        <label for="valueString">First name</label>
-        <input data-testid="input" id="valueString" type="text" formControlName="valueString" />
-        <label for="valueNull">First name null</label>
-        <input data-testid="input-null" id="valueNull" type="text" formControlName="valueNull" />
+        <label for="password">Email</label>
+        <input data-testid="input" id="password" type="password" formControlName="password" />
+        <label for="passwordNull">Email null</label>
+        <input data-testid="input-null" id="passwordNull" type="password" formControlName="passwordNull" />
       </form>
-      <button data-testid="btn" onClick={() => setForm((s) => ({ ...s, valueString: TEST_INPUT_VALUE }))}>
-        Change valueString
+      <button data-testid="btn" onClick={() => setForm((s) => ({ ...s, password: TEST_INPUT_VALUE }))}>
+        Change password
       </button>
-      <button data-testid="btn-null" onClick={() => setForm((s) => ({ ...s, valueString: null }))}>
-        Change valueString to null
+      <button data-testid="btn-null" onClick={() => setForm((s) => ({ ...s, password: null }))}>
+        Change password to null
       </button>
     </>
   );
 };
 
-describe('Input element with type="text" as form control', () => {
+describe('Input element with type="password" as form control', () => {
   let $valueString: HTMLElement;
   let $valueNull: HTMLElement;
   let $inputWithString: HTMLInputElement;
