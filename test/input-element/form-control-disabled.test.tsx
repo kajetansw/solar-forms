@@ -104,7 +104,7 @@ const TestApp = () => {
   );
 };
 
-describe('Nested form control', () => {
+describe('Disabling form controls and groups', () => {
   let $controlEnabled1: HTMLInputElement;
   let $controlEnabled2: HTMLInputElement;
   let $controlDisabled: HTMLInputElement;
