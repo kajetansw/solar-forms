@@ -1,7 +1,7 @@
-import { CreateFormGroupInput } from '../create-form-group/types';
-import { FormGroup } from './types';
-import { ToFormGroupValue } from '../create-form-group/to-form-control-value';
-import { ToFormGroupDisabled } from '../create-form-group/to-form-control-disabled';
+import { CreateFormGroupInput } from '../../create-form-group/types';
+import { FormGroup } from '../types';
+import { ToFormGroupValue } from '../../create-form-group/to-form-control-value';
+import { ToFormGroupDisabled } from '../../create-form-group/to-form-control-disabled';
 
 export function toNestedFormGroupSignal<I extends CreateFormGroupInput, K extends keyof I>(
   formGroupSignal: () => FormGroup<I>,

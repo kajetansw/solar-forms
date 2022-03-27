@@ -1,6 +1,6 @@
 import { createFormGroup, formGroup } from '../../src';
 import { render } from 'solid-testing-library';
-import { FormControlInvalidTypeError } from '../../src/utils/errors';
+import { FormControlInvalidTypeError } from '../../src/errors';
 
 const TestApp = () => {
   const fg = createFormGroup({

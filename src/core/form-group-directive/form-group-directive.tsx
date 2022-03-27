@@ -1,13 +1,13 @@
 import { createEffect, createRenderEffect, onCleanup } from 'solid-js';
-import getFormControlName from '../../utils/get-form-control-name';
-import { FormControlInvalidKeyError, FormControlInvalidTypeError } from '../../utils/errors';
-import { getInputValueType } from '../../utils/input-element.utils';
+import { FormControlInvalidKeyError, FormControlInvalidTypeError } from '../../errors';
 import { isArrayElement, isBoolean, isDate, isNull, isNumber, isString } from '../../guards';
-import { getFormControl } from '../../utils/get-form-control';
-import getFormGroupName from '../../utils/get-form-group-name';
+import { getFormControl } from './utils/get-form-control';
 import { CreateFormGroupInput } from '../create-form-group/types';
 import { FormGroup } from './types';
-import { toNestedFormGroupSignal } from './to-nested-form-group-signal';
+import { toNestedFormGroupSignal } from './utils/to-nested-form-group-signal';
+import { getFormControlName } from './utils/get-form-control-name';
+import { getFormGroupName } from './utils/get-form-group-name';
+import { getInputValueType } from './utils/get-input-value-type';
 
 export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroupSignal: () => FormGroup<I>) {
   if (el && isArrayElement(el.children)) {

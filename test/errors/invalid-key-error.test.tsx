@@ -1,6 +1,6 @@
 import { createFormGroup, formGroup } from '../../src';
 import { render } from 'solid-testing-library';
-import { FormControlInvalidKeyError } from '../../src/utils/errors';
+import { FormControlInvalidKeyError } from '../../src/errors';
 
 const FORM_GROUP_KEY = 'firstName';
 const INVALID_FORM_GROUP_KEY = 'company';

@@ -1,4 +1,4 @@
-import { InputValueType } from './input-element.utils';
+import { InputValueType } from '../core/form-group-directive/utils/get-input-value-type';
 
 export class FormControlInvalidKeyError extends Error {
   constructor(formControlName: string) {
