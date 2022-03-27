@@ -10,6 +10,8 @@ export function toNestedFormGroupSignal<I extends CreateFormGroupInput, K extend
   return () => {
     const [value, setValue] = formGroupSignal().value;
     const [disabled, setDisabled] = formGroupSignal().disabled;
+    const [disabledAll, setDisabledAll] = formGroupSignal().disabledAll;
+
     const valueSliceGetter = () => value()[formGroupName] as ToFormGroupValue<CreateFormGroupInput>;
     const disabledSliceGetter = () => disabled()[formGroupName] as ToFormGroupDisabled<CreateFormGroupInput>;
 
@@ -32,6 +34,7 @@ export function toNestedFormGroupSignal<I extends CreateFormGroupInput, K extend
               : { ...disabled(), [formGroupName]: { ...functionOrValue } }
           ),
       ],
+      disabledAll: [disabledAll, setDisabledAll],
     };
   };
 }
