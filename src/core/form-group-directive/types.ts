@@ -6,4 +6,5 @@ import { ToFormGroupDisabled } from '../create-form-group/to-form-control-disabl
 export interface FormGroup<I extends CreateFormGroupInput> {
   value: FormGroupSignal<ToFormGroupValue<I>>;
   disabled: FormGroupSignal<ToFormGroupDisabled<I>>;
+  disabledAll: FormGroupSignal<boolean>;
 }
