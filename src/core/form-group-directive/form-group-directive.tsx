@@ -1,5 +1,9 @@
 import { createEffect, createRenderEffect, onCleanup } from 'solid-js';
-import { FormControlInvalidKeyError, FormControlInvalidTypeError } from '../../errors';
+import {
+  FormControlInvalidKeyError,
+  FormControlInvalidNestedGroupError,
+  FormControlInvalidTypeError,
+} from '../../errors';
 import { isArrayElement, isBoolean, isDate, isNull, isNumber, isString } from '../../guards';
 import { getFormControl } from './utils/get-form-control';
 import { CreateFormGroupInput } from '../create-form-group/types';
@@ -13,6 +17,11 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
   if (el && isArrayElement(el.children)) {
     const [value, setValue] = formGroupSignal().value;
     const [getDisabled] = formGroupSignal().disabled;
+
+    if (!value()) {
+      throw new FormControlInvalidNestedGroupError(getFormGroupName(el));
+    }
+
     const formGroupKeys = Object.keys(value());
 
     for (const $child of el.children) {
