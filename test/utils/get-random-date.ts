@@ -21,6 +21,18 @@ export function getRandomTimeString(): string {
   return hh + ':' + mm;
 }
 
+export function getRandomTimeDate(): Date {
+  const randomDateTime = getRandomDateTime();
+  randomDateTime.setDate(1);
+  randomDateTime.setMonth(0);
+  randomDateTime.setFullYear(1970);
+  return randomDateTime;
+}
+
+export function getRandomTimeNumber(): number {
+  return getRandomTimeDate().getTime();
+}
+
 function convertToDate(dateTime: Date): Date {
   return new Date(dateTime.toDateString());
 }
