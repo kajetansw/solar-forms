@@ -18,6 +18,7 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
     for (const $child of el.children) {
       const formGroupName = getFormGroupName($child);
       if (formGroupName) {
+        // Handle nested form groups
         formGroup($child, toNestedFormGroupSignal(formGroupSignal, formGroupName));
       } else {
         const $formControl = getFormControl($child);
@@ -30,6 +31,7 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
               throw new FormControlInvalidKeyError(formControlName);
             }
 
+            // Set form control as disabled or enabled
             createEffect(() => {
               const disabledValue = getDisabled()[formControlName];
               if (isBoolean(disabledValue)) {
@@ -37,8 +39,11 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
               }
             });
 
+            // Set value of form control element
             createRenderEffect(() => {
-              if (getInputValueType($formControl.type) === 'string') {
+              const inputType = getInputValueType($formControl.type);
+
+              if (inputType === 'string') {
                 const formValue = value()[formControlName];
                 if (isString(formValue) || isNull(formValue)) {
                   $formControl.value = formValue as string;
@@ -46,7 +51,7 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
                   throw new FormControlInvalidTypeError(formControlName, 'string', formValue);
                 }
               }
-              if (getInputValueType($formControl.type) === 'radio') {
+              if (inputType === 'radio') {
                 const formValue = value()[formControlName];
                 if (isString(formValue) || isNull(formValue)) {
                   $formControl.checked = $formControl.value === formValue;
@@ -54,7 +59,7 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
                   throw new FormControlInvalidTypeError(formControlName, 'string', formValue);
                 }
               }
-              if (getInputValueType($formControl.type) === 'number') {
+              if (inputType === 'number') {
                 const formValue = value()[formControlName];
                 if (isNumber(formValue)) {
                   $formControl.valueAsNumber = formValue;
@@ -64,7 +69,7 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
                   throw new FormControlInvalidTypeError(formControlName, 'number', formValue);
                 }
               }
-              if (getInputValueType($formControl.type) === 'boolean') {
+              if (inputType === 'boolean') {
                 const formValue = value()[formControlName];
                 if (isBoolean(formValue)) {
                   $formControl.checked = formValue;
@@ -74,7 +79,7 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
                   throw new FormControlInvalidTypeError(formControlName, 'boolean', formValue);
                 }
               }
-              if (getInputValueType($formControl.type) === 'date') {
+              if (inputType === 'date' || inputType === 'time') {
                 const formValue = value()[formControlName];
                 if (isString(formValue) || isNull(formValue)) {
                   $formControl.value = formValue as string;
@@ -90,7 +95,7 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
                   );
                 }
               }
-              if (getInputValueType($formControl.type) === 'datetime-local') {
+              if (inputType === 'datetime-local') {
                 const formValue = value()[formControlName];
                 if (isString(formValue) || isNull(formValue)) {
                   $formControl.value = formValue as string;
@@ -102,22 +107,22 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
               }
             });
 
+            // Update form group value on user input
             const onInput = () => {
-              if (
-                getInputValueType($formControl.type) === 'string' ||
-                getInputValueType($formControl.type) === 'radio'
-              ) {
+              const inputType = getInputValueType($formControl.type);
+
+              if (inputType === 'string' || inputType === 'radio') {
                 setValue((s) => ({ ...s, [formControlName]: $formControl.value }));
               }
-              if (getInputValueType($formControl.type) === 'number') {
+              if (inputType === 'number') {
                 if (!Number.isNaN($formControl.valueAsNumber)) {
                   setValue((s) => ({ ...s, [formControlName]: $formControl.valueAsNumber }));
                 }
               }
-              if (getInputValueType($formControl.type) === 'boolean') {
+              if (inputType === 'boolean') {
                 setValue((s) => ({ ...s, [formControlName]: $formControl.checked }));
               }
-              if (getInputValueType($formControl.type) === 'date') {
+              if (inputType === 'date' || inputType === 'time') {
                 const formValue = value()[formControlName];
                 if (isString(formValue) || isNull(formValue)) {
                   setValue((s) => ({ ...s, [formControlName]: $formControl.value }));
@@ -129,7 +134,7 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
                   setValue((s) => ({ ...s, [formControlName]: $formControl.valueAsDate }));
                 }
               }
-              if (getInputValueType($formControl.type) === 'datetime-local') {
+              if (inputType === 'datetime-local') {
                 const formValue = value()[formControlName];
                 if (isString(formValue) || isNull(formValue)) {
                   setValue((s) => ({ ...s, [formControlName]: $formControl.value }));
@@ -140,6 +145,8 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
               }
             };
             $formControl.addEventListener('input', onInput);
+
+            // Clean up
             onCleanup(() => $formControl.removeEventListener('input', onInput));
           }
         }
