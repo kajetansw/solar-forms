@@ -1,13 +1,35 @@
 import { isFormGroupValueConfigTuple, isRecord } from '../../guards';
 import { CreateFormGroupInput } from './types';
+import { ToFormGroupBooleanMap, ToFormGroupValue } from '../types';
 
-/**
- * Type that maps `CreateFormGroupInput` to recursive record with keys from
- * form group input and booleans as values.
- */
-export type ToFormGroupBooleanMap<T extends CreateFormGroupInput> = {
-  [K in keyof T]: T[K] extends CreateFormGroupInput ? ToFormGroupBooleanMap<T[K]> : boolean;
-};
+export function toFormGroupValue<I extends CreateFormGroupInput, V extends ToFormGroupValue<I>>(
+  initial: I
+): V {
+  let output = {} as V;
+
+  for (const key of Object.keys(initial)) {
+    const vc = initial[key];
+
+    if (isFormGroupValueConfigTuple(vc)) {
+      output = {
+        ...output,
+        [key]: vc[0],
+      };
+    } else if (isRecord(vc)) {
+      output = {
+        ...output,
+        [key]: toFormGroupValue(vc),
+      };
+    } else {
+      output = {
+        ...output,
+        [key]: vc,
+      };
+    }
+  }
+
+  return output;
+}
 
 export function toFormGroupDisabled<I extends CreateFormGroupInput, D extends ToFormGroupBooleanMap<I>>(
   initial: I

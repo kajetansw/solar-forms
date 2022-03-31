@@ -1,9 +1,9 @@
 import { createSignal } from 'solid-js';
-import { toFormGroupValue } from './to-form-control-value';
-import { toFormGroupBooleanMap, ToFormGroupBooleanMap, toFormGroupDisabled } from './map-form-group-input';
+import { toFormGroupBooleanMap, toFormGroupDisabled, toFormGroupValue } from './map-form-group-input';
 import { CreateFormGroupInput } from './types';
 import { FormGroup } from '../form-group-directive';
 import { everyKey, setEveryKey } from './every-key';
+import { ToFormGroupBooleanMap } from '../types';
 
 export function createFormGroup<I extends CreateFormGroupInput>(initialValue: I): FormGroup<I> {
   const [value, setValue] = createSignal(toFormGroupValue(initialValue)) as FormGroup<I>['value'];
