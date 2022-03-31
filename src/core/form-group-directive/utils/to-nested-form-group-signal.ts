@@ -1,7 +1,7 @@
 import { CreateFormGroupInput } from '../../create-form-group/types';
 import { FormGroup } from '../types';
 import { ToFormGroupValue } from '../../create-form-group/to-form-control-value';
-import { ToFormGroupDisabled } from '../../create-form-group/to-form-control-disabled';
+import { ToFormGroupBooleanMap } from '../../create-form-group/map-form-group-input';
 
 export function toNestedFormGroupSignal<I extends CreateFormGroupInput, K extends keyof I>(
   formGroupSignal: () => FormGroup<I>,
@@ -11,9 +11,12 @@ export function toNestedFormGroupSignal<I extends CreateFormGroupInput, K extend
     const [value, setValue] = formGroupSignal().value;
     const [disabled, setDisabled] = formGroupSignal().disabled;
     const [disabledAll, setDisabledAll] = formGroupSignal().disabledAll;
+    const [dirty, setDirty] = formGroupSignal().dirty;
 
     const valueSliceGetter = () => value()[formGroupName] as ToFormGroupValue<CreateFormGroupInput>;
-    const disabledSliceGetter = () => disabled()[formGroupName] as ToFormGroupDisabled<CreateFormGroupInput>;
+    const disabledSliceGetter = () =>
+      disabled()[formGroupName] as ToFormGroupBooleanMap<CreateFormGroupInput>;
+    const dirtySliceGetter = () => dirty()[formGroupName] as ToFormGroupBooleanMap<CreateFormGroupInput>;
 
     return {
       value: [
@@ -35,6 +38,15 @@ export function toNestedFormGroupSignal<I extends CreateFormGroupInput, K extend
           ),
       ],
       disabledAll: [disabledAll, setDisabledAll],
+      dirty: [
+        dirtySliceGetter,
+        (functionOrValue) =>
+          setDirty(
+            typeof functionOrValue === 'function'
+              ? { ...dirty(), [formGroupName]: { ...functionOrValue(dirtySliceGetter()) } }
+              : { ...dirty(), [formGroupName]: { ...functionOrValue } }
+          ),
+      ],
     };
   };
 }

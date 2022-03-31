@@ -1,6 +1,6 @@
 import { createSignal } from 'solid-js';
 import { toFormGroupValue } from './to-form-control-value';
-import { ToFormGroupDisabled, toFormGroupDisabled } from './to-form-control-disabled';
+import { toFormGroupBooleanMap, ToFormGroupBooleanMap, toFormGroupDisabled } from './map-form-group-input';
 import { CreateFormGroupInput } from './types';
 import { FormGroup } from '../form-group-directive';
 import { everyKey, setEveryKey } from './every-key';
@@ -11,12 +11,14 @@ export function createFormGroup<I extends CreateFormGroupInput>(initialValue: I)
   const disabledAll = () => everyKey(true)(disabled());
   const setDisabledAll = (value: boolean | ((prev: boolean) => boolean)) =>
     typeof value === 'boolean'
-      ? setDisabled(setEveryKey(value)(disabled()) as ToFormGroupDisabled<I>)
-      : setDisabled(setEveryKey(value(disabledAll()))(disabled()) as ToFormGroupDisabled<I>);
+      ? setDisabled(setEveryKey(value)(disabled()) as ToFormGroupBooleanMap<I>)
+      : setDisabled(setEveryKey(value(disabledAll()))(disabled()) as ToFormGroupBooleanMap<I>);
+  const [dirty, setDirty] = createSignal(toFormGroupBooleanMap(initialValue)) as FormGroup<I>['dirty'];
 
   return {
     value: [value, setValue],
     disabled: [disabled, setDisabled],
     disabledAll: [disabledAll, setDisabledAll],
+    dirty: [dirty, setDirty],
   };
 }

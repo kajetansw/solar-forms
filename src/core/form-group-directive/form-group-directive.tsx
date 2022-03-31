@@ -17,6 +17,12 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
   if (el && isArrayElement(el.children)) {
     const [value, setValue] = formGroupSignal().value;
     const [getDisabled] = formGroupSignal().disabled;
+    const [dirty, setDirty] = formGroupSignal().dirty;
+    const setToDirtyIfPristine = (formControlName: string | undefined) => {
+      if (formControlName && !dirty()[formControlName]) {
+        setDirty((s) => ({ ...s, [formControlName]: true }));
+      }
+    };
 
     if (!value()) {
       throw new FormControlInvalidNestedGroupError(getFormGroupName(el));
@@ -122,34 +128,42 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
 
               if (inputType === 'string' || inputType === 'radio') {
                 setValue((s) => ({ ...s, [formControlName]: $formControl.value }));
+                setToDirtyIfPristine(formControlName);
               }
               if (inputType === 'number') {
                 if (!Number.isNaN($formControl.valueAsNumber)) {
                   setValue((s) => ({ ...s, [formControlName]: $formControl.valueAsNumber }));
+                  setToDirtyIfPristine(formControlName);
                 }
               }
               if (inputType === 'boolean') {
                 setValue((s) => ({ ...s, [formControlName]: $formControl.checked }));
+                setToDirtyIfPristine(formControlName);
               }
               if (inputType === 'date' || inputType === 'time') {
                 const formValue = value()[formControlName];
                 if (isString(formValue) || isNull(formValue)) {
                   setValue((s) => ({ ...s, [formControlName]: $formControl.value }));
+                  setToDirtyIfPristine(formControlName);
                 }
                 if (isNumber(formValue)) {
                   setValue((s) => ({ ...s, [formControlName]: $formControl.valueAsNumber }));
+                  setToDirtyIfPristine(formControlName);
                 }
                 if (isDate(formValue)) {
                   setValue((s) => ({ ...s, [formControlName]: $formControl.valueAsDate }));
+                  setToDirtyIfPristine(formControlName);
                 }
               }
               if (inputType === 'datetime-local') {
                 const formValue = value()[formControlName];
                 if (isString(formValue) || isNull(formValue)) {
                   setValue((s) => ({ ...s, [formControlName]: $formControl.value }));
+                  setToDirtyIfPristine(formControlName);
                 }
                 if (isNumber(formValue)) {
                   setValue((s) => ({ ...s, [formControlName]: $formControl.valueAsNumber }));
+                  setToDirtyIfPristine(formControlName);
                 }
               }
             };
