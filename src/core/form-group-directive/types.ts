@@ -8,4 +8,5 @@ export interface FormGroup<I extends CreateFormGroupInput> {
   disabledAll: FormGroupSignal<boolean>;
   dirty: FormGroupSignal<ToFormGroupBooleanMap<I>>;
   dirtyAll: FormGroupSignal<boolean>;
+  touched: FormGroupSignal<ToFormGroupBooleanMap<I>>;
 }

@@ -18,9 +18,15 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
     const [value, setValue] = formGroupSignal().value;
     const [getDisabled] = formGroupSignal().disabled;
     const [dirty, setDirty] = formGroupSignal().dirty;
+    const [touched, setTouched] = formGroupSignal().touched;
     const setToDirtyIfPristine = (formControlName: string | undefined) => {
       if (formControlName && !dirty()[formControlName]) {
         setDirty((s) => ({ ...s, [formControlName]: true }));
+      }
+    };
+    const setToTouchedIfUntouched = (formControlName: string | undefined) => {
+      if (formControlName && !touched()[formControlName]) {
+        setTouched((s) => ({ ...s, [formControlName]: true }));
       }
     };
 
@@ -122,7 +128,7 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
               }
             });
 
-            // Update form group value on user input
+            // Update form group value and mark as dirty on user input
             const onInput = () => {
               const inputType = getInputValueType($formControl.type);
 
@@ -169,8 +175,13 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
             };
             $formControl.addEventListener('input', onInput);
 
+            // Mark as touched on blur event
+            const onBlur = () => setToTouchedIfUntouched(formControlName);
+            $formControl.addEventListener('blur', onBlur);
+
             // Clean up
             onCleanup(() => $formControl.removeEventListener('input', onInput));
+            onCleanup(() => $formControl.removeEventListener('blur', onBlur));
           }
         }
       }

@@ -22,11 +22,14 @@ export function createFormGroup<I extends CreateFormGroupInput>(initialValue: I)
       ? setDirty(setEveryKey(value)(dirty()) as ToFormGroupBooleanMap<I>)
       : setDirty(setEveryKey(value(dirtyAll()))(dirty()) as ToFormGroupBooleanMap<I>);
 
+  const [touched, setTouched] = createSignal(toFormGroupBooleanMap(initialValue)) as FormGroup<I>['touched'];
+
   return {
     value: [value, setValue],
     disabled: [disabled, setDisabled],
     disabledAll: [disabledAll, setDisabledAll],
     dirty: [dirty, setDirty],
     dirtyAll: [dirtyAll, setDirtyAll],
+    touched: [touched, setTouched],
   };
 }
