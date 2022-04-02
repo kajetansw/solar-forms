@@ -9,4 +9,5 @@ export interface FormGroup<I extends CreateFormGroupInput> {
   dirty: FormGroupSignal<ToFormGroupBooleanMap<I>>;
   dirtyAll: FormGroupSignal<boolean>;
   touched: FormGroupSignal<ToFormGroupBooleanMap<I>>;
+  touchedAll: FormGroupSignal<boolean>;
 }

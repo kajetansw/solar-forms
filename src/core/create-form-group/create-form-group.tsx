@@ -23,6 +23,11 @@ export function createFormGroup<I extends CreateFormGroupInput>(initialValue: I)
       : setDirty(setEveryKey(value(dirtyAll()))(dirty()) as ToFormGroupBooleanMap<I>);
 
   const [touched, setTouched] = createSignal(toFormGroupBooleanMap(initialValue)) as FormGroup<I>['touched'];
+  const touchedAll = () => everyKey(true)(touched());
+  const setTouchedAll = (value: boolean | ((prev: boolean) => boolean)) =>
+    typeof value === 'boolean'
+      ? setTouched(setEveryKey(value)(touched()) as ToFormGroupBooleanMap<I>)
+      : setTouched(setEveryKey(value(touchedAll()))(touched()) as ToFormGroupBooleanMap<I>);
 
   return {
     value: [value, setValue],
@@ -31,5 +36,6 @@ export function createFormGroup<I extends CreateFormGroupInput>(initialValue: I)
     dirty: [dirty, setDirty],
     dirtyAll: [dirtyAll, setDirtyAll],
     touched: [touched, setTouched],
+    touchedAll: [touchedAll, setTouchedAll],
   };
 }
