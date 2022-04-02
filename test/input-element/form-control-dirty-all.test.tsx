@@ -69,7 +69,7 @@ describe('Marking all form controls and groups as dirty or pristine', () => {
     expect($valueDirtyAll.innerHTML).toBe(String(false));
   });
 
-  it('should read dirtyAll value as "false" when at least one form control is pristine (not dirty)', () => {
+  it('should read dirtyAll value as "false" when not all form controls are dirty', () => {
     userEvent.type($inputValue1, TEST_VALUE);
 
     expect($valueDirtyAll.innerHTML).toBe(String(false));
@@ -94,7 +94,7 @@ describe('Marking all form controls and groups as dirty or pristine', () => {
     expect($valueDirtyAll.innerHTML).toBe(String(true));
   });
 
-  it('should mark all form controls as pristine (not dirty) when setting the property programmatically from outside the form', () => {
+  it('should read dirtyAll value as "false" when setting the touched property to "false" programmatically from outside the form', () => {
     userEvent.click($btnMarkAllDirty);
     userEvent.click($btnMarkAllPristine);
 
