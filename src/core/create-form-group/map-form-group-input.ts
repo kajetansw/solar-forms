@@ -1,6 +1,11 @@
 import { isFormGroupValueConfigTuple, isRecord } from '../../guards';
 import { CreateFormGroupInput } from './types';
-import { ToFormGroupBooleanMap, ToFormGroupValidatorsMap, ToFormGroupValue } from '../types';
+import {
+  ToFormGroupBooleanMap,
+  ToFormGroupValidationErrorsMap,
+  ToFormGroupValidatorsMap,
+  ToFormGroupValue,
+} from '../types';
 import { ValidatorFn } from '../../types';
 
 export function toFormGroupValue<I extends CreateFormGroupInput, V extends ToFormGroupValue<I>>(
@@ -116,6 +121,37 @@ export function toFormGroupValidatorsMap<
       output = {
         ...output,
         [key]: defaultValidators,
+      };
+    }
+  }
+
+  return output;
+}
+
+export function toFormGroupValidationErrorsMap<
+  I extends CreateFormGroupInput,
+  E extends ToFormGroupValidationErrorsMap<I>
+>(initial: I): E {
+  let output = {} as E;
+  const defaultValidationErrors = null;
+
+  for (const key of Object.keys(initial)) {
+    const vc = initial[key];
+
+    if (isFormGroupValueConfigTuple(vc)) {
+      output = {
+        ...output,
+        [key]: defaultValidationErrors,
+      };
+    } else if (isRecord(vc)) {
+      output = {
+        ...output,
+        [key]: toFormGroupValidationErrorsMap(vc),
+      };
+    } else {
+      output = {
+        ...output,
+        [key]: defaultValidationErrors,
       };
     }
   }

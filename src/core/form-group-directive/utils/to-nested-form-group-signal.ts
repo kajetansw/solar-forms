@@ -1,6 +1,11 @@
 import { CreateFormGroupInput } from '../../create-form-group/types';
 import { FormGroup } from '../types';
-import { ToFormGroupBooleanMap, ToFormGroupValidatorsMap, ToFormGroupValue } from '../../types';
+import {
+  ToFormGroupBooleanMap,
+  ToFormGroupValidationErrorsMap,
+  ToFormGroupValidatorsMap,
+  ToFormGroupValue,
+} from '../../types';
 
 export function toNestedFormGroupSignal<I extends CreateFormGroupInput, K extends keyof I>(
   formGroupSignal: () => FormGroup<I>,
@@ -17,6 +22,7 @@ export function toNestedFormGroupSignal<I extends CreateFormGroupInput, K extend
     const [validators, setValidators] = formGroupSignal().validators;
     const valid = formGroupSignal().valid;
     const validAll = formGroupSignal().validAll;
+    const errors = formGroupSignal().errors;
 
     const valueSliceGetter = () => value()[formGroupName] as ToFormGroupValue<CreateFormGroupInput>;
     const disabledSliceGetter = () =>
@@ -26,6 +32,8 @@ export function toNestedFormGroupSignal<I extends CreateFormGroupInput, K extend
     const validatorsSliceGetter = () =>
       validators()[formGroupName] as ToFormGroupValidatorsMap<CreateFormGroupInput>;
     const validSliceGetter = () => valid()[formGroupName] as ToFormGroupBooleanMap<CreateFormGroupInput>;
+    const errorsSliceGetter = () =>
+      errors()[formGroupName] as ToFormGroupValidationErrorsMap<CreateFormGroupInput>;
 
     return {
       value: [
@@ -78,6 +86,7 @@ export function toNestedFormGroupSignal<I extends CreateFormGroupInput, K extend
       ],
       valid: validSliceGetter,
       validAll,
+      errors: errorsSliceGetter,
     };
   };
 }

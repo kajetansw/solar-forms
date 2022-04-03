@@ -2,15 +2,16 @@ import { createEffect, createSignal } from 'solid-js';
 import {
   toFormGroupBooleanMap,
   toFormGroupDisabled,
+  toFormGroupValidationErrorsMap,
   toFormGroupValidatorsMap,
   toFormGroupValue,
 } from './map-form-group-input';
 import { CreateFormGroupInput } from './types';
 import { FormGroup } from '../form-group-directive';
 import { everyKey, setEveryKey } from './every-key';
-import { ToFormGroupBooleanMap } from '../types';
+import { ToFormGroupBooleanMap, ToFormGroupValidationErrorsMap } from '../types';
 import { FormGroupSignal } from '../../types';
-import { toValid } from './map-validators';
+import { toValidationErrors, toValid } from './map-validators';
 
 export function createFormGroup<I extends CreateFormGroupInput>(initialValue: I): FormGroup<I> {
   const [value, setValue] = createSignal(toFormGroupValue(initialValue)) as FormGroup<I>['value'];
@@ -45,8 +46,13 @@ export function createFormGroup<I extends CreateFormGroupInput>(initialValue: I)
   >;
   const validAll = () => everyKey(true)(valid());
 
+  const [errors, setErrors] = createSignal(toFormGroupValidationErrorsMap(initialValue)) as FormGroupSignal<
+    ToFormGroupValidationErrorsMap<I>
+  >;
+
   createEffect(() => {
     setValid(toValid(validators, value, disabled, dirty, touched));
+    setErrors(toValidationErrors(validators, value, disabled, dirty, touched));
   });
 
   return {
@@ -60,5 +66,6 @@ export function createFormGroup<I extends CreateFormGroupInput>(initialValue: I)
     validators: [validators, setValidators],
     valid,
     validAll,
+    errors,
   };
 }

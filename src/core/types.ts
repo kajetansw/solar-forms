@@ -1,5 +1,5 @@
 import { CreateFormGroupInput, FormGroupValueConfigTuple } from './create-form-group/types';
-import { ValidatorFn } from '../types';
+import { ValidationErrors, ValidatorFn } from '../types';
 
 /**
  * Type that maps `CreateFormGroupInput` to recursive record with keys and values from
@@ -27,4 +27,14 @@ export type ToFormGroupBooleanMap<T extends CreateFormGroupInput> = {
  */
 export type ToFormGroupValidatorsMap<T extends CreateFormGroupInput> = {
   [K in keyof T]: T[K] extends CreateFormGroupInput ? ToFormGroupValidatorsMap<T[K]> : ValidatorFn[];
+};
+
+/**
+ * Type that maps `CreateFormGroupInput` to recursive record with keys from
+ * form group input and validation errors records as values.
+ */
+export type ToFormGroupValidationErrorsMap<T extends CreateFormGroupInput> = {
+  [K in keyof T]: T[K] extends CreateFormGroupInput
+    ? ToFormGroupValidationErrorsMap<T[K]>
+    : ValidationErrors | null;
 };

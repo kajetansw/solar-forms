@@ -1,6 +1,11 @@
 import { CreateFormGroupInput } from '../create-form-group/types';
 import { FormGroupAccessor, FormGroupSignal } from '../../types';
-import { ToFormGroupBooleanMap, ToFormGroupValidatorsMap, ToFormGroupValue } from '../types';
+import {
+  ToFormGroupBooleanMap,
+  ToFormGroupValidationErrorsMap,
+  ToFormGroupValidatorsMap,
+  ToFormGroupValue,
+} from '../types';
 
 export interface FormGroup<I extends CreateFormGroupInput> {
   value: FormGroupSignal<ToFormGroupValue<I>>;
@@ -13,4 +18,5 @@ export interface FormGroup<I extends CreateFormGroupInput> {
   validators: FormGroupSignal<ToFormGroupValidatorsMap<I>>;
   valid: FormGroupAccessor<ToFormGroupBooleanMap<I>>;
   validAll: FormGroupAccessor<boolean>;
+  errors: FormGroupAccessor<ToFormGroupValidationErrorsMap<I>>;
 }
