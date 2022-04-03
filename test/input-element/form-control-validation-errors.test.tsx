@@ -8,9 +8,6 @@ const INIT_NUMBER_VALUE = 0;
 const TEST_STRING_VALUE = 'test';
 const TEST_NUMBER_VALUE = 10;
 
-const TRUE = String(true);
-const FALSE = String(false);
-
 const required = (formControl: FormControl) =>
   formControl.value ? null : { required: 'This control is required!' };
 const min = (count: number) => (formControl: FormControl) => {
@@ -34,16 +31,16 @@ const TestApp = () => {
     },
   });
   const [form, setForm] = fg.value;
-  const valid = fg.valid;
+  const errors = fg.errors;
 
   return (
     <>
-      <p data-testid="valid-value1">{String(valid().value1)}</p>
-      <p data-testid="valid-value2">{String(valid().value2)}</p>
-      <p data-testid="valid-value3">{String(valid().value3)}</p>
-      <p data-testid="valid-value41">{String(valid().value4.value41)}</p>
-      <p data-testid="valid-value42">{String(valid().value4.value42)}</p>
-      <p data-testid="valid-value43">{String(valid().value4.value43)}</p>
+      <p data-testid="errors-value1">{JSON.stringify(errors().value1)}</p>
+      <p data-testid="errors-value2">{JSON.stringify(errors().value2)}</p>
+      <p data-testid="errors-value3">{JSON.stringify(errors().value3)}</p>
+      <p data-testid="errors-value41">{JSON.stringify(errors().value4.value41)}</p>
+      <p data-testid="errors-value42">{JSON.stringify(errors().value4.value42)}</p>
+      <p data-testid="errors-value43">{JSON.stringify(errors().value4.value43)}</p>
 
       <form use:formGroup={fg}>
         <label for="value1">value1</label>
@@ -109,12 +106,12 @@ const TestApp = () => {
 };
 
 describe('Reading and marking form controls and groups as touched or untouched', () => {
-  let $validValue1: HTMLElement;
-  let $validValue2: HTMLElement;
-  let $validValue3: HTMLElement;
-  let $validValue41: HTMLElement;
-  let $validValue42: HTMLElement;
-  let $validValue43: HTMLElement;
+  let $errorsValue1: HTMLElement;
+  let $errorsValue2: HTMLElement;
+  let $errorsValue3: HTMLElement;
+  let $errorsValue41: HTMLElement;
+  let $errorsValue42: HTMLElement;
+  let $errorsValue43: HTMLElement;
   let $inputValue1: HTMLInputElement;
   let $inputValue2: HTMLInputElement;
   let $inputValue3: HTMLInputElement;
@@ -131,12 +128,12 @@ describe('Reading and marking form controls and groups as touched or untouched',
   beforeEach(async () => {
     render(() => <TestApp />);
 
-    $validValue1 = await screen.findByTestId('valid-value1');
-    $validValue2 = await screen.findByTestId('valid-value2');
-    $validValue3 = await screen.findByTestId('valid-value3');
-    $validValue41 = await screen.findByTestId('valid-value41');
-    $validValue42 = await screen.findByTestId('valid-value42');
-    $validValue43 = await screen.findByTestId('valid-value43');
+    $errorsValue1 = await screen.findByTestId('errors-value1');
+    $errorsValue2 = await screen.findByTestId('errors-value2');
+    $errorsValue3 = await screen.findByTestId('errors-value3');
+    $errorsValue41 = await screen.findByTestId('errors-value41');
+    $errorsValue42 = await screen.findByTestId('errors-value42');
+    $errorsValue43 = await screen.findByTestId('errors-value43');
     $inputValue1 = (await screen.findByTestId('input-value1')) as HTMLInputElement;
     $inputValue2 = (await screen.findByTestId('input-value2')) as HTMLInputElement;
     $inputValue3 = (await screen.findByTestId('input-value3')) as HTMLInputElement;
@@ -151,116 +148,146 @@ describe('Reading and marking form controls and groups as touched or untouched',
     $btnChangeValue43 = await screen.findByTestId('btn-change-value43');
   });
 
-  describe('should already mark form controls as valid/invalid on init', () => {
+  describe('should already show validation errors on init', () => {
     describe('for top-level controls', () => {
-      it('should mark form control as valid when there is no validators provided in the config', () => {
-        expect($validValue1.innerHTML).toBe(TRUE);
+      it('should show no errors when there is no validators provided in the config', () => {
+        const errors = JSON.parse($errorsValue1.innerHTML);
+
+        expect(errors).toBe(null);
       });
 
-      it('should mark form control as invalid when there is one validator that fails', () => {
-        expect($validValue2.innerHTML).toBe(FALSE);
+      it('should show errors when there is one validator that fails', () => {
+        const errors = JSON.parse($errorsValue2.innerHTML);
+
+        expect(errors).not.toBe(null);
+        expect(Object.keys(errors)).toContain('required');
       });
 
-      it('should mark form control as invalid when there are two validators that fail', () => {
-        expect($validValue3.innerHTML).toBe(FALSE);
+      it('should show errors when there are two validators that fail', () => {
+        const errors = JSON.parse($errorsValue3.innerHTML);
+
+        expect(errors).not.toBe(null);
+        expect(Object.keys(errors)).toContain('required');
+        expect(Object.keys(errors)).toContain('min');
       });
     });
 
     describe('for nested controls', () => {
-      it('should mark form control as valid when there is no validators provided in the config', () => {
-        expect($validValue41.innerHTML).toBe(TRUE);
+      it('should show no errors when there is no validators provided in the config', () => {
+        const errors = JSON.parse($errorsValue41.innerHTML);
+
+        expect(errors).toBe(null);
       });
 
-      it('should mark form control as invalid when there is one validator that fails', () => {
-        expect($validValue42.innerHTML).toBe(FALSE);
+      it('should show errors when there is one validator that fails', () => {
+        const errors = JSON.parse($errorsValue42.innerHTML);
+
+        expect(errors).not.toBe(null);
+        expect(Object.keys(errors)).toContain('required');
       });
 
-      it('should mark form control as invalid when there are two validators that fail', () => {
-        expect($validValue43.innerHTML).toBe(FALSE);
+      it('should show errors when there are two validators that fail', () => {
+        const errors = JSON.parse($errorsValue43.innerHTML);
+
+        expect(errors).not.toBe(null);
+        expect(Object.keys(errors)).toContain('required');
+        expect(Object.keys(errors)).toContain('min');
       });
     });
   });
 
-  describe('should mark form controls as valid when form control values are changed to valid programmatically from outside the form', () => {
+  describe('should show no errors when form control values are changed to valid programmatically from outside the form', () => {
     describe('for top-level controls', () => {
       it('value is changed from valid to valid', () => {
         userEvent.click($btnChangeValue1);
+        const errors = JSON.parse($errorsValue1.innerHTML);
 
-        expect($validValue1.innerHTML).toBe(TRUE);
+        expect(errors).toBe(null);
       });
 
       it('value is changed from invalid to valid when there is one validator', () => {
         userEvent.click($btnChangeValue2);
+        const errors = JSON.parse($errorsValue2.innerHTML);
 
-        expect($validValue2.innerHTML).toBe(TRUE);
+        expect(errors).toBe(null);
       });
 
       it('value is changed from invalid to valid when there are two validators', () => {
         userEvent.click($btnChangeValue3);
+        const errors = JSON.parse($errorsValue3.innerHTML);
 
-        expect($validValue3.innerHTML).toBe(TRUE);
+        expect(errors).toBe(null);
       });
     });
 
     describe('for nested controls', () => {
       it('value is changed from valid to valid', () => {
         userEvent.click($btnChangeValue41);
+        const errors = JSON.parse($errorsValue41.innerHTML);
 
-        expect($validValue41.innerHTML).toBe(TRUE);
+        expect(errors).toBe(null);
       });
 
       it('value is changed from invalid to valid when there is one validator', () => {
         userEvent.click($btnChangeValue42);
+        const errors = JSON.parse($errorsValue42.innerHTML);
 
-        expect($validValue42.innerHTML).toBe(TRUE);
+        expect(errors).toBe(null);
       });
 
       it('value is changed from invalid to valid when there are two validators', () => {
         userEvent.click($btnChangeValue43);
+        const errors = JSON.parse($errorsValue43.innerHTML);
 
-        expect($validValue43.innerHTML).toBe(TRUE);
+        expect(errors).toBe(null);
       });
     });
   });
 
-  describe('should mark form controls as valid when form control values are changed from UI', () => {
+  describe('should show no errors when form control values are changed to valid from UI', () => {
     describe('for top-level controls', () => {
       it('value is changed from valid to valid', () => {
         userEvent.type($inputValue1, TEST_STRING_VALUE);
+        const errors = JSON.parse($errorsValue1.innerHTML);
 
-        expect($validValue1.innerHTML).toBe(TRUE);
+        expect(errors).toBe(null);
       });
 
       it('value is changed from invalid to valid when there is one validator', () => {
         userEvent.type($inputValue2, TEST_STRING_VALUE);
+        const errors = JSON.parse($errorsValue2.innerHTML);
 
-        expect($validValue2.innerHTML).toBe(TRUE);
+        expect(errors).toBe(null);
       });
 
       it('value is changed from invalid to valid when there are two validators', () => {
         userEvent.type($inputValue3, String(TEST_NUMBER_VALUE));
+        const errors = JSON.parse($errorsValue3.innerHTML);
 
-        expect($validValue3.innerHTML).toBe(TRUE);
+        expect(errors).toBe(null);
       });
     });
 
     describe('for nested controls', () => {
       it('value is changed from valid to valid', () => {
         userEvent.type($inputValue41, TEST_STRING_VALUE);
+        const errors = JSON.parse($errorsValue41.innerHTML);
 
-        expect($validValue41.innerHTML).toBe(TRUE);
+        expect(errors).toBe(null);
       });
 
       it('value is changed from invalid to valid when there is one validator', () => {
         userEvent.type($inputValue42, TEST_STRING_VALUE);
+        const errors = JSON.parse($errorsValue42.innerHTML);
 
-        expect($validValue42.innerHTML).toBe(TRUE);
+        expect(errors).toBe(null);
       });
 
       it('value is changed from invalid to valid when there are two validators', () => {
         userEvent.type($inputValue43, String(TEST_NUMBER_VALUE));
+        const errors = JSON.parse($errorsValue43.innerHTML);
 
-        expect($validValue43.innerHTML).toBe(TRUE);
+        expect(errors).toBe(null);
       });
     });
   });

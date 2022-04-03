@@ -12,11 +12,11 @@ const TRUE = String(true);
 const FALSE = String(false);
 
 const required = (formControl: FormControl) =>
-  formControl.value ? null : { message: 'This control is required!' };
+  formControl.value ? null : { required: 'This control is required!' };
 const min = (count: number) => (formControl: FormControl) => {
   const value = formControl.value;
   if (isNumber(value)) {
-    return value >= count ? null : { message: `Number cannot be less than ${count}!` };
+    return value >= count ? null : { min: `Number cannot be less than ${count}!` };
   } else {
     return null;
   }
