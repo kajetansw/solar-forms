@@ -43,6 +43,7 @@ export function createFormGroup<I extends CreateFormGroupInput>(initialValue: I)
   const [valid, setValid] = createSignal(toFormGroupBooleanMap(initialValue)) as FormGroupSignal<
     ToFormGroupBooleanMap<I>
   >;
+  const validAll = () => everyKey(true)(valid());
 
   createEffect(() => {
     setValid(toValid(validators, value, disabled, dirty, touched));
@@ -57,6 +58,7 @@ export function createFormGroup<I extends CreateFormGroupInput>(initialValue: I)
     touched: [touched, setTouched],
     touchedAll: [touchedAll, setTouchedAll],
     validators: [validators, setValidators],
-    valid: valid,
+    valid,
+    validAll,
   };
 }

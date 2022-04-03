@@ -12,4 +12,5 @@ export interface FormGroup<I extends CreateFormGroupInput> {
   touchedAll: FormGroupSignal<boolean>;
   validators: FormGroupSignal<ToFormGroupValidatorsMap<I>>;
   valid: FormGroupAccessor<ToFormGroupBooleanMap<I>>;
+  validAll: FormGroupAccessor<boolean>;
 }

@@ -16,6 +16,7 @@ export function toNestedFormGroupSignal<I extends CreateFormGroupInput, K extend
     const [touchedAll, setTouchedAll] = formGroupSignal().touchedAll;
     const [validators, setValidators] = formGroupSignal().validators;
     const valid = formGroupSignal().valid;
+    const validAll = formGroupSignal().validAll;
 
     const valueSliceGetter = () => value()[formGroupName] as ToFormGroupValue<CreateFormGroupInput>;
     const disabledSliceGetter = () =>
@@ -76,6 +77,7 @@ export function toNestedFormGroupSignal<I extends CreateFormGroupInput, K extend
           ),
       ],
       valid: validSliceGetter,
+      validAll,
     };
   };
 }
