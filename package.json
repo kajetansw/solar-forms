@@ -1,6 +1,6 @@
 {
-  "name": "solid-ng-reactive-forms",
-  "version": "0.0.0",
+  "name": "solar-forms",
+  "version": "0.0.1",
   "description": "Form library for SolidJS inspired by Angular's reactive forms",
   "type": "module",
   "main": "dist/esm/index.js",
@@ -9,6 +9,7 @@
   "keywords": [
     "solid",
     "solid-js",
+    "solidjs",
     "forms",
     "form",
     "reactive"
@@ -30,14 +31,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kajetansw/solid-ng-reactive-forms.git"
+    "url": "git+https://github.com/kajetansw/solar-forms.git"
   },
   "author": "Kajetan Świątek",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kajetansw/solid-ng-reactive-forms/issues"
+    "url": "https://github.com/kajetansw/solar-forms/issues"
   },
-  "homepage": "https://github.com/kajetansw/solid-ng-reactive-forms#readme",
+  "homepage": "https://github.com/kajetansw/solar-forms#readme",
   "peerDependencies": {
     "solid-js": "^1.3.0"
   },
