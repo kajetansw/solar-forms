@@ -28,11 +28,11 @@ export const toValid =
         output = {
           ...output,
           [key]: toValid(
-            () => vs[key] as TODO,
-            () => v[key] as TODO,
-            () => dis[key] as TODO,
-            () => dir[key] as TODO,
-            () => t[key] as TODO
+            () => vs[key] as ToFormGroupValidatorsMap<CreateFormGroupInput>,
+            () => v[key] as ToFormGroupValue<CreateFormGroupInput>,
+            () => dis[key] as ToFormGroupBooleanMap<CreateFormGroupInput>,
+            () => dir[key] as ToFormGroupBooleanMap<CreateFormGroupInput>,
+            () => t[key] as ToFormGroupBooleanMap<CreateFormGroupInput>
           )(current as ToFormGroupBooleanMap<I>),
         };
       } else {
