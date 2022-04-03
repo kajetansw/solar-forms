@@ -1,6 +1,7 @@
 import { isFormGroupValueConfigTuple, isRecord } from '../../guards';
 import { CreateFormGroupInput } from './types';
-import { ToFormGroupBooleanMap, ToFormGroupValue } from '../types';
+import { ToFormGroupBooleanMap, ToFormGroupValidatorsMap, ToFormGroupValue } from '../types';
+import { ValidatorFn } from '../../types';
 
 export function toFormGroupValue<I extends CreateFormGroupInput, V extends ToFormGroupValue<I>>(
   initial: I
@@ -84,6 +85,37 @@ export function toFormGroupBooleanMap<I extends CreateFormGroupInput, D extends 
       output = {
         ...output,
         [key]: defaultDisabled,
+      };
+    }
+  }
+
+  return output;
+}
+
+export function toFormGroupValidatorsMap<
+  I extends CreateFormGroupInput,
+  V extends ToFormGroupValidatorsMap<I>
+>(initial: I): V {
+  let output = {} as V;
+  const defaultValidators: ValidatorFn[] = [];
+
+  for (const key of Object.keys(initial)) {
+    const vc = initial[key];
+
+    if (isFormGroupValueConfigTuple(vc)) {
+      output = {
+        ...output,
+        [key]: vc[1].validators ?? defaultValidators,
+      };
+    } else if (isRecord(vc)) {
+      output = {
+        ...output,
+        [key]: toFormGroupValidatorsMap(vc),
+      };
+    } else {
+      output = {
+        ...output,
+        [key]: defaultValidators,
       };
     }
   }

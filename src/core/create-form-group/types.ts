@@ -1,14 +1,6 @@
-type TODO = any;
+import { ValidatorFn } from '../../types';
 
-type ValidationErrors = {
-  [key: string]: TODO;
-};
-
-interface ValidatorFn {
-  (control: TODO): ValidationErrors | null;
-}
-
-type FormGroupPrimitive = string | number | boolean | Date | null;
+export type FormGroupPrimitive = string | number | boolean | Date | null;
 
 type FormGroupConfig = {
   disabled?: boolean;
