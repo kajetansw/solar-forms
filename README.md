@@ -114,6 +114,24 @@ declare module 'solid-js' {
 This will allow you to bind Solar's form group to your form elements without TypeScript type errors 
 related to new HTML attributes.
 
+Also, make sure you have following `vite-plugin-solid` options turned on:
+
+```typescript
+// vite.config.ts
+
+import { defineConfig } from 'vite';
+import solidPlugin from 'vite-plugin-solid';
+
+export default defineConfig({
+  // Enable following `vite-plugin-solid` config option:
+  plugins: [solidPlugin({ typescript: { onlyRemoveTypeImports: true } })],
+  build: {
+    target: 'esnext',
+    polyfillDynamicImport: false,
+  },
+});
+```
+
 
 # Documentation
 
@@ -157,7 +175,7 @@ related to new HTML attributes.
 
 ## Online examples
 
-🚧 Under construction! 🚧
+- [Registration form example](https://stackblitz.com/edit/solid-vite-km8l2n?file=src/index.tsx)
 
 ## Getting started
 
