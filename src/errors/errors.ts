@@ -2,7 +2,7 @@ import { InputValueType } from '../core/form-group-directive/utils/get-input-val
 
 export class FormControlInvalidKeyError extends Error {
   constructor(formControlName: string) {
-    super(`"${formControlName}" form control name does not match any key from the form group value object.`);
+    super(`"${formControlName}" form control name does not match any key from the form group.`);
   }
 }
 
