@@ -13,7 +13,9 @@
     "solidjs",
     "forms",
     "form",
-    "reactive"
+    "reactive",
+    "solidhack",
+    "best_ecosystem"
   ],
   "files": [
     "dist"
