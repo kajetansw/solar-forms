@@ -23,7 +23,6 @@
 
 ```tsx
 import { createFormGroup, formGroup } from 'solar-forms';
-import { Show } from 'solid-js';
 
 const Registration = ({ onSubmit }: Props) => {
   const fg = createFormGroup({
