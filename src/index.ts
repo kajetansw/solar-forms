@@ -1,5 +1,4 @@
-export * from './core/create-form-group';
-export * from './core/form-group-directive';
+export * from './core';
 export * from './types';
 
 declare module 'solid-js' {
