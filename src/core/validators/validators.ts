@@ -37,6 +37,28 @@ export const Validators = {
     return null;
   },
 
+  minLength: (length: number) => (formControl: FormControl) => {
+    const formValue = formControl.value;
+
+    if (isEmpty(formValue)) {
+      return null;
+    } else if (isString(formValue)) {
+      return formValue.length >= length ? null : { minLength: true };
+    }
+    return null;
+  },
+
+  maxLength: (length: number) => (formControl: FormControl) => {
+    const formValue = formControl.value;
+
+    if (isEmpty(formValue)) {
+      return null;
+    } else if (isString(formValue)) {
+      return formValue.length <= length ? null : { maxLength: true };
+    }
+    return null;
+  },
+
   is: (value: string | number | boolean | null) => (formControl: FormControl) => {
     const formValue = formControl.value;
     return formValue === value ? null : { is: true };
