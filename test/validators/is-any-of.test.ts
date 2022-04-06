@@ -18,18 +18,18 @@ describe('"isAnyOf" validator', () => {
     expect(output).toBe(null);
   });
 
-  it('should return "null" if form control value is "string" and values provided in validator are "number[]"', () => {
+  it('should return error if form control value is "string" and values provided in validator are "number[]"', () => {
     const formControl = getFormControlWithValue('test');
     const output = V.isAnyOf([0, 1, 2])(formControl);
 
-    expect(output).toBe(null);
+    expect(output?.isAny).toBeTruthy();
   });
 
-  it('should return "null" if form control value is "number" and values provided in validator are "string[]"', () => {
+  it('should return error if form control value is "number" and values provided in validator are "string[]"', () => {
     const formControl = getFormControlWithValue(1);
     const output = V.isAnyOf(['test1', 'test2', 'test3'])(formControl);
 
-    expect(output).toBe(null);
+    expect(output?.isAny).toBeTruthy();
   });
 
   it('should return error if form control value is "string" and does not match any of values provided in validator', () => {
