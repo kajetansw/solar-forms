@@ -90,48 +90,8 @@ npm install solar-forms
 yarn add solar-forms
 ```
 
-Before you start, register the directive and new attributes for HTML elements 
-by [extending SolidJS's JSX namespace](https://www.solidjs.com/docs/latest/api#use%3A___):
-
-```tsx
-declare module 'solid-js' {
-  namespace JSX {
-    interface Directives {
-      formGroup?: {};
-    }
-
-    interface InputHTMLAttributes<T> {
-      formControlName?: string;
-    }
-
-    interface HTMLAttributes<T> {
-      formGroupName?: string;
-    }
-  }
-}
-```
-
-This will allow you to bind Solar's form group to your form elements without TypeScript type errors 
-related to new HTML attributes.
-
-Also, make sure you have following `vite-plugin-solid` options turned on:
-
-```typescript
-// vite.config.ts
-
-import { defineConfig } from 'vite';
-import solidPlugin from 'vite-plugin-solid';
-
-export default defineConfig({
-  // Enable following `vite-plugin-solid` config option:
-  plugins: [solidPlugin({ typescript: { onlyRemoveTypeImports: true } })],
-  build: {
-    target: 'esnext',
-    polyfillDynamicImport: false,
-  },
-});
-```
-
+> If you encounter any issues when setting up Solar Forms, try consulting our
+> [FAQ](#faq) section!
 
 # Documentation
 
@@ -156,7 +116,7 @@ export default defineConfig({
     + [Type of "email"](#type-of-email)
     + [Type of "password"](#type-of-password)
     + [Type of "tel"](#type-of-tel)
-    + [Type of "url"](#type-of--url-)
+    + [Type of "url"](#type-of-url)
     + [Type of "number"](#type-of-number)
     + [Type of "range"](#type-of-range)
     + [Type of "date"](#type-of-date)
@@ -168,6 +128,9 @@ export default defineConfig({
     + [Form control name does not match any key from form group](#form-control-name-does-not-match-any-key-from-form-group)
     + [Form control type does not match the type of an input element](#form-control-type-does-not-match-the-type-of-an-input-element)
   * [Nested form groups](#nested-form-groups)
+- [FAQ](#faq)
+  * [I'm getting `Uncaught ReferenceError: formGroup is not defined`](#im-getting-uncaught-referenceerror-formgroup-is-not-defined)
+  * [I'm getting type errors when defining `use:formGroup`, `formGroupName` and `formControlName` attributes](#im-getting-type-errors-when-defining-useformgroup-formgroupname-and-formcontrolname-attributes)
 - [Roadmap](#roadmap)
 - [Support](#support)
 - [Contribution guidelines](#contribution-guidelines)
@@ -205,7 +168,7 @@ Second of the main concepts of Solar Forms is the `formGroup` [SolidJS directive
 that allows you to bind your form group to your `form` HTML element:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   // 1️⃣ Form control named `firstName`
@@ -236,7 +199,7 @@ After you set up your form group the way shown above, you can access your form c
 values using the `value` signal:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   firstName: 'John',
@@ -256,7 +219,7 @@ The `value` signal contains tuple of reactive value for our form group and a set
 function. You'll see this pattern along the way of learning about the rest of form control properties:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   firstName: 'John',
@@ -284,7 +247,7 @@ return (
 A setter function allows us to set the form controls' values at will:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   firstName: 'John',
@@ -362,7 +325,7 @@ Under the hood, the `disabled` state is bound to your form elements, so that any
 control state is reflected in the UI:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   firstName: ['John', { disabled: true }],
@@ -383,7 +346,7 @@ return (
 Also, any update to the `disabled` form control state is reflected in the UI as well:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   firstName: ['John', { disabled: true }],
@@ -440,7 +403,7 @@ console.log(disabledAll());
 You can also set your entire form as enabled or disabled using the `setDisabledAll` setter function:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   firstName: ['John', { disabled: true }],
@@ -517,7 +480,7 @@ Whenever the user changes the form input value from UI, the `dirty` property for
 is set to `true`:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   firstName: '',
@@ -546,7 +509,7 @@ You can also mark your form controls as "dirty" or "pristine" (as an opposite to
 programmatically as well:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   firstName: '',
@@ -599,7 +562,7 @@ You can also set your entire form as "dirty" or "pristine" (as an opposite to "d
 using the `setDirtyAll` setter function:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   firstName: 'Johm',
@@ -681,7 +644,7 @@ Whenever user switches from the specific form control to another (triggering the
 the `touched` property for the form control is set to `true`:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   firstName: 'John',
@@ -713,7 +676,7 @@ return (
 You can also mark your form controls as "touched" or "untouched" programmatically:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   firstName: 'John',
@@ -771,7 +734,7 @@ You can also mark your entire form as "touched" or "untouched" using the `setTou
 function:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   firstName: 'Johm',
@@ -918,7 +881,7 @@ After changing form control values, (either with UI or using value setter functi
 functions are run again against form control values and the `valid` state is updated accordingly.
 
 ```tsx
-// Inside a component
+// Component definition
 
 const required = (formControl) =>
   formControl.value ? null : { required: 'This is required!' };
@@ -973,7 +936,7 @@ When all form controls are valid (all form controls' validator functions pass), 
 `true` as well:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const required = (formControl) =>
   formControl.value ? null : { required: 'This is required!' };
@@ -1078,7 +1041,7 @@ This is the most basic input element - a string-based input element type. Accord
 define your form control's default value as `string` or `null`:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   // 1️⃣ Default value is set here as string
@@ -1100,7 +1063,7 @@ Another string-based input element type. For the corresponding form control you 
 define the default value as `string` or `null`:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   // 1️⃣ Default value is set here as string
@@ -1122,7 +1085,7 @@ Another string-based input element type. For the corresponding form control you 
 define the default value as `string` or `null`:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   // 1️⃣ Default value is set here as string
@@ -1144,7 +1107,7 @@ Another string-based input element type. For the corresponding form control you 
 define the default value as `string` or `null`:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   // 1️⃣ Default value is set here as string
@@ -1166,7 +1129,7 @@ Another string-based input element type. For the corresponding form control you 
 define the default value as `string` or `null`:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   // 1️⃣ Default value is set here as string
@@ -1188,7 +1151,7 @@ The most basic number-based type of input element. In this case, for the corresp
 you can define the default value as `number` or `null`:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   // 1️⃣ Default value is set here as number
@@ -1210,7 +1173,7 @@ Another number-based type of input element. For the corresponding form control
 you can define the default value as `number` or `null`:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   // 1️⃣ Default value is set here as number
@@ -1235,7 +1198,7 @@ you can define the default value as `Date` object, `string`, `number` or `null`:
 > [proper date text formats](https://developer.mozilla.org/en-US/docs/Web/HTML/Date_and_time_formats#format_of_a_valid_date_string).
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   // 1️⃣ Default values are set here
@@ -1268,7 +1231,7 @@ you can define the default value as `string`, `number` or `null`:
 > [proper date text formats](https://developer.mozilla.org/en-US/docs/Web/HTML/Date_and_time_formats#format_of_a_valid_date_string).
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   // 1️⃣ Default values are set here
@@ -1297,7 +1260,7 @@ you can define the default value as `Date`, `string`, `number` or `null`:
 > [proper time text formats](https://developer.mozilla.org/en-US/docs/Web/HTML/Date_and_time_formats#time_strings).
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   // 1️⃣ Default values are set here
@@ -1327,7 +1290,7 @@ A boolean-based type of input element. For the corresponding form control
 you can define the default value as `boolean` or `null`:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   // 1️⃣ Default values are set here
@@ -1349,7 +1312,7 @@ A string-based type of input element, where you can choose one of pre-defined se
 For the corresponding form control you can define the default value as `string` or `null`:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   // 1️⃣ Default value is set here
@@ -1382,7 +1345,7 @@ In case we'd made a mistake while connecting a form group key with the form inpu
 `formControlName` HTML attribute, we would get a runtime error informing us of the mistake:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   firstName: 'John',
@@ -1410,7 +1373,7 @@ wasn't supposed to be used with a given HTML element, we would get a runtime err
 us of the mistake:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   // 1️⃣ Here we initialize `firstName` form control value as `string`
@@ -1458,7 +1421,7 @@ To represent nested form groups in your template, you must wrap the form input e
 for that nested form group in another element, e.g. `div` and declare a `formGroupName` attribute:
 
 ```tsx
-// Inside a component
+// Component definition
 
 const fg = createFormGroup({
   firstName: 'John',
@@ -1493,6 +1456,55 @@ All rules and features apply to the nested form groups as well:
 - runtime type checking for proper using of form group keys and values
 
 
+## FAQ
+
+### I'm getting `Uncaught ReferenceError: formGroup is not defined`
+
+If you encounter this problem, make sure you have following `vite-plugin-solid` options turned on:
+
+```typescript
+// vite.config.ts
+
+import { defineConfig } from 'vite';
+import solidPlugin from 'vite-plugin-solid';
+
+export default defineConfig({
+  // Enable following `vite-plugin-solid` config option:
+  plugins: [solidPlugin({ typescript: { onlyRemoveTypeImports: true } })],
+});
+```
+
+Solution for the problem was found in this 
+[answer for similar issue for SolidJS directives](https://github.com/solidjs/solid/issues/569#issuecomment-882721883).
+
+
+###  I'm getting type errors when defining `use:formGroup`, `formGroupName` and `formControlName` attributes
+
+If you encounter TypeScript type errors when using the `formGroup` directive and new attributes 
+with your HTML elements, try [extending SolidJS's JSX namespace](https://www.solidjs.com/docs/latest/api#use%3A___):
+
+```tsx
+declare module 'solid-js' {
+  namespace JSX {
+    interface Directives {
+      formGroup?: {};
+    }
+
+    interface InputHTMLAttributes<T> {
+      formControlName?: string;
+    }
+
+    interface HTMLAttributes<T> {
+      formGroupName?: string;
+    }
+  }
+}
+```
+
+This will allow you to bind Solar's form group to your form elements without TypeScript type errors
+related to new HTML attributes.
+
+
 ## Roadmap
 
 - [ ] Creating and exporting [build-in validator functions](https://angular.io/api/forms/Validators) for common usage
@@ -1500,6 +1512,7 @@ All rules and features apply to the nested form groups as well:
 - [ ] Support for `<select>` element
 - [ ] Defining and using [form arrays](https://angular.io/guide/reactive-forms#creating-dynamic-forms)
 - [ ] Support for [async validators](https://angular.io/api/forms/AsyncValidatorFn)
+- [ ] Documentation for API
 
 
 ## Support
