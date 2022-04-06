@@ -6,6 +6,9 @@ import { FormGroupPrimitive } from '../create-form-group/types';
 const isEmpty = (value: FormGroupPrimitive) =>
   isNull(value) || isUndefined(value) || Number.isNaN(value) || value === '';
 
+const EMAIL_REGEXP =
+  /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
 export const Validators = {
   required: (formControl: FormControl) => {
     const formValue = formControl.value;
@@ -54,9 +57,47 @@ export const Validators = {
     const formValueIncluded =
       (isString(formValue) && isStringArray(arr) && arr.includes(formValue)) ||
       (isNumber(formValue) && isNumberArray(arr) && arr.includes(formValue));
-    const typesMismatch =
-      (isString(formValue) && isNumberArray(arr)) || (isNumber(formValue) && isStringArray(arr));
 
-    return formValueIncluded || typesMismatch ? null : { isAny: true };
+    return formValueIncluded ? null : { isAny: true };
+  },
+
+  email: (formControl: FormControl) => {
+    const formValue = formControl.value;
+    if (isEmpty(formValue)) {
+      return null;
+    }
+    return isString(formValue) && EMAIL_REGEXP.test(formValue) ? null : { email: true };
+  },
+
+  pattern: (pat: string | RegExp) => {
+    let regex: RegExp;
+    let regexStr: string;
+    if (typeof pat === 'string') {
+      regexStr = '';
+
+      if (pat.charAt(0) !== '^') {
+        regexStr += '^';
+      }
+
+      regexStr += pat;
+
+      if (pat.charAt(pat.length - 1) !== '$') {
+        regexStr += '$';
+      }
+
+      regex = new RegExp(regexStr);
+    } else {
+      regexStr = pat.toString();
+      regex = pat;
+    }
+    return (formControl: FormControl) => {
+      const formValue = formControl.value;
+      if (isEmpty(formValue)) {
+        return null;
+      }
+      return isString(formValue) && regex.test(formValue)
+        ? null
+        : { pattern: { requiredPattern: regexStr, actualValue: formValue } };
+    };
   },
 };
