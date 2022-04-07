@@ -1,6 +1,6 @@
 {
   "name": "solar-forms",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Form library for SolidJS inspired by Angular's reactive forms",
   "info": "Solar Forms allows you to create reactive and type-safe state for your form controls. It lets you take over form controls and access key information like control's current value, whether it's disabled, valid, etc. as SolidJS signals. Form controls can also be pre-configured with validator functions, ensuring your form won't be marked as valid unless all data is correct.",
   "type": "module",
