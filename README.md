@@ -73,7 +73,7 @@ form won't be marked as valid unless **all data is correct**.
 - Create form group as a set of related controls that you can manage.
 - Use form control properties like `value`, `disabled`, `dirty` and `touched`.
 - Use form group properties like `disabledAll`, `dirtyAll` and `touchedAll`.
-- Pre-configure form controls with build-in or custom validator functions to ensure you have all information you need before the form is submitted.
+- Pre-configure form controls with built-in or custom validator functions to ensure you have all information you need before the form is submitted.
 - Check if a single form control or an entire form group is valid with `valid` and `validAll` properties.
 - Access validation errors with `errors` form control property.
 - Access all form group and form control properties as SolidJS signals.
@@ -111,6 +111,16 @@ yarn add solar-forms
     + [Accessing the `valid` form control property](#accessing-the-valid-form-control-property)
     + [Accessing the `validAll` form group property](#accessing-the-validall-form-group-property)
     + [Accessing validation errors](#accessing-validation-errors)
+    + [Built-in validators](#built-in-validators)
+      * [`required` validator](#required-validator)
+      * [`min` validator](#min-validator)
+      * [`max` validator](#max-validator)
+      * [`minLength` validator](#minlength-validator)
+      * [`maxLength` validator](#maxlength-validator)
+      * [`is` validator](#is-validator)
+      * [`isAnyOf` validator](#isanyof-validator)
+      * [`email` validator](#email-validator)
+      * [`pattern` validator](#pattern-validator)
   * [Binding form controls to different types of input elements](#binding-form-controls-to-different-types-of-input-elements)
     + [Type of "text"](#type-of-text)
     + [Type of "email"](#type-of-email)
@@ -792,18 +802,18 @@ user input should be valid. We do not accept emails with wrong format, empty pas
 not ticked or dates of birth that make you over 200 years old.
 
 With Solar Forms you can take control over your user's input and define how your form controls
-should be validated. You can do that by using build-in or custom validator functions:
+should be validated. You can do that by using [built-in](#built-in-validators) or custom validator functions:
 
 ```tsx
 import { FormControl, ValidatorFn } from 'solar-forms';
 
 const required: ValidatorFn = (formControl: FormControl) => 
-  formControl.value ? null : { required: 'This is required!' };
+  formControl.value ? null : { required: true };
 ```
 
 This is a very simple example of how to define custom `required` validator function for your
 form controls. Here we are checking whether the value is falsy (but remember that `0` is also falsy!)
-and if it is, we return the record with validation error message(s). If the value is valid, we return
+and if it is, we return the record with validation error. If the value is valid, we return
 `null`, meaning there are no validation errors.
 
 `FormControl` and `ValidatorFn` types seem important here, so let's take a look at their definitions:
@@ -833,7 +843,7 @@ your form group:
 
 ```tsx
 const required = (formControl) =>
-  formControl.value ? null : { required: 'This is required!' };
+  formControl.value ? null : { required: true };
 
 const fg = createFormGroup({
   // Adding validator(s) to your form control
@@ -852,7 +862,7 @@ That's what the `valid` form control property is for:
 
 ```tsx
 const required = (formControl) =>
-  formControl.value ? null : { required: 'This is required!' };
+  formControl.value ? null : { required: true };
 
 const fg = createFormGroup({
   password: ['', { validators: [required] }],
@@ -866,7 +876,7 @@ whether the form control value passes the all validator functions.
 
 ```tsx
 const required = (formControl) =>
-  formControl.value ? null : { required: 'This is required!' };
+  formControl.value ? null : { required: true };
 
 const fg = createFormGroup({
   password: ['', { validators: [required] }],
@@ -884,7 +894,7 @@ functions are run again against form control values and the `valid` state is upd
 // Component definition
 
 const required = (formControl) =>
-  formControl.value ? null : { required: 'This is required!' };
+  formControl.value ? null : { required: true };
 
 const fg = createFormGroup({
   password: ['', { validators: [required] }],
@@ -918,7 +928,7 @@ can use `validAll` accessor to check whether the whole form is valid or not:
 
 ```tsx
 const required = (formControl) =>
-  formControl.value ? null : { required: 'This is required!' };
+  formControl.value ? null : { required: true };
 
 const fg = createFormGroup({
   name: '',
@@ -939,7 +949,7 @@ When all form controls are valid (all form controls' validator functions pass), 
 // Component definition
 
 const required = (formControl) =>
-  formControl.value ? null : { required: 'This is required!' };
+  formControl.value ? null : { required: true };
 
 const fg = createFormGroup({
   name: '',
@@ -975,7 +985,7 @@ form control property:
 
 ```tsx
 const required = (formControl) =>
-  formControl.value ? null : { required: 'This is required!' };
+  formControl.value ? null : { required: true };
 
 const fg = createFormGroup({
   password: ['', { validators: [required] }],
@@ -989,7 +999,7 @@ values and the `errors` form control property is updated accordingly:
 
 ```tsx
 const required = (formControl) =>
-  formControl.value ? null : { required: 'This is required!' };
+  formControl.value ? null : { required: true };
 
 const fg = createFormGroup({
   name: '',
@@ -1014,6 +1024,204 @@ object.
 > 
 > Doing otherwise may result in overwriting your keys inside the `ValidationErrors` record.  
 
+
+#### Built-in validators
+
+As you've learned, form group accepts list of validators that match the
+`ValidatorFn` interface. This means you can write custom validators
+for your own use cases.
+
+As an alternative, you can use built-in validators provided by Solar Forms.
+Here's a brief introduction:
+
+##### `required` validator
+
+Validator that requires the control have a non-empty value 
+(`null` and`''` are treated as empty values).
+
+```tsx
+import { createFormGroup, Validators as V } from 'solar-forms';
+
+const fg = createFormGroup({
+  firstName: ['', { validators: [V.required] }],
+  lastName: ['Smith', { validators: [V.required] }],
+});
+const errors = fg.errors;
+
+// ➡️ Logs `{ required: true }`
+console.log(errors().firstName);
+// ➡️ Logs `null`
+console.log(errors().lastName);
+```
+
+##### `min` validator
+
+Validator that requires the control's value to be greater than 
+or equal to the provided number.
+
+```tsx
+import { createFormGroup, Validators as V } from 'solar-forms';
+
+const fg = createFormGroup({
+  minorAge: [16, { validators: [V.min(21)] }],
+  adultAge: [30, { validators: [V.min(21)] }],
+});
+const errors = fg.errors;
+
+// ➡️ Logs `{ min: true }`
+console.log(errors().minorAge);
+// ➡️ Logs `null`
+console.log(errors().adultAge);
+```
+
+##### `max` validator
+
+Validator that requires the control's value to be less than 
+or equal to the provided number.
+
+```tsx
+import { createFormGroup, Validators as V } from 'solar-forms';
+
+const fg = createFormGroup({
+  invalidAmount: [30, { validators: [V.max(10)] }],
+  validAmount: [5, { validators: [V.max(10)] }],
+});
+const errors = fg.errors;
+
+// ➡️ Logs `{ max: true }`
+console.log(errors().invalidAmount);
+// ➡️ Logs `null`
+console.log(errors().validAmount);
+```
+
+##### `minLength` validator
+
+Validator that requires the length of the control's 
+string-based value's length to be greater than or equal 
+to the provided minimum length.
+
+```tsx
+import { createFormGroup, Validators as V } from 'solar-forms';
+
+const fg = createFormGroup({
+  invalidPassword: ['grfr', { validators: [V.minLength(8)] }],
+  validPassword: ['wdnaw#@!udnwahe3w@#$@!', { validators: [V.minLength(8)] }],
+});
+const errors = fg.errors;
+
+// ➡️ Logs `{ minLength: true }`
+console.log(errors().invalidPassword);
+// ➡️ Logs `null`
+console.log(errors().validPassword);
+```
+
+##### `maxLength` validator
+
+Validator that requires the length of the control's 
+string-based value's length to be lower than or equal 
+to the provided maximum length.
+
+```tsx
+import { createFormGroup, Validators as V } from 'solar-forms';
+
+const fg = createFormGroup({
+  invalidInput: ['qwertyuiopasdfg', { validators: [V.maxLength(10)] }],
+  validInput: ['qwerty', { validators: [V.maxLength(10)] }],
+});
+const errors = fg.errors;
+
+// ➡️ Logs `{ maxLength: true }`
+console.log(errors().invalidInput);
+// ➡️ Logs `null`
+console.log(errors().validInput);
+```
+
+##### `is` validator
+
+Validator that requires the value of the form control
+to be equal to the provided value.
+
+```tsx
+import { createFormGroup, Validators as V } from 'solar-forms';
+
+const fg = createFormGroup({
+  invalidCaptcha: ['q1q1q1', { validators: [V.is('q1w2e3')] }],
+  validCaptcha: ['q1w2e3', { validators: [V.is('q1w2e3')] }],
+  nonAcceptedTerms: [false, { validators: [V.is(true)] }],
+  acceptedTerms: [true, { validators: [V.is(true)] }],
+});
+const errors = fg.errors;
+
+// ➡️ Logs `{ is: true }`
+console.log(errors().invalidCaptcha);
+// ➡️ Logs `null`
+console.log(errors().validCaptcha);
+// ➡️ Logs `{ is: true }`
+console.log(errors().nonAcceptedTerms);
+// ➡️ Logs `null`
+console.log(errors().acceptedTerms);
+```
+
+##### `isAnyOf` validator
+
+Validator that requires the value of the form control
+to be equal to one of provided values.
+
+```tsx
+import { createFormGroup, Validators as V } from 'solar-forms';
+
+const fg = createFormGroup({
+  invalidCountry: ['Poland', { validators: [V.isAnyOf(['Spain', 'France', 'Germany'])] }],
+  validCountry: ['Spain', { validators: [V.isAnyOf(['Spain', 'France', 'Germany'])] }],
+});
+const errors = fg.errors;
+
+// ➡️ Logs `{ isAnyOf: true }`
+console.log(errors().invalidCountry);
+// ➡️ Logs `null`
+console.log(errors().validCountry);
+```
+
+##### `email` validator
+
+Validator that requires the value of the form control
+to have a valid email format.
+
+```tsx
+import { createFormGroup, Validators as V } from 'solar-forms';
+
+const fg = createFormGroup({
+  invalidEmail: ['test', { validators: [V.email] }],
+  validEmail: ['test@test.com', { validators: [V.email] }],
+});
+const errors = fg.errors;
+
+// ➡️ Logs `{ email: true }`
+console.log(errors().invalidEmail);
+// ➡️ Logs `null`
+console.log(errors().validEmail);
+```
+
+##### `pattern` validator
+
+Validator that requires the value of the form control
+to have a format matching provided regular expression.
+
+```tsx
+import { createFormGroup, Validators as V } from 'solar-forms';
+
+const regexp = /^([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/gm;
+const fg = createFormGroup({
+  invalidHour: ['test', { validators: [V.pattern(regexp)] }],
+  validHour: ['12:00:00', { validators: [V.pattern(regexp)] }],
+});
+const errors = fg.errors;
+
+// ➡️ Logs `{ pattern: { requiredPattern: ..., actualValue: 'test' } }`
+console.log(errors().invalidHour);
+// ➡️ Logs `null`
+console.log(errors().validHour);
+```
 
 
 ### Binding form controls to different types of input elements
@@ -1507,7 +1715,7 @@ related to new HTML attributes.
 
 ## Roadmap
 
-- [ ] Creating and exporting [build-in validator functions](https://angular.io/api/forms/Validators) for common usage
+- [x] Creating and exporting [built-in validator functions](https://angular.io/api/forms/Validators) for common usage
 - [ ] Support for `<textarea>` element
 - [ ] Support for `<select>` element
 - [ ] Defining and using [form arrays](https://angular.io/guide/reactive-forms#creating-dynamic-forms)
