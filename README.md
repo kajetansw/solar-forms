@@ -22,14 +22,14 @@
 </p>
 
 ```tsx
-import { createFormGroup, formGroup } from 'solar-forms';
+import { createFormGroup, formGroup, Validators as V } from 'solar-forms';
 
 const Registration = ({ onSubmit }: Props) => {
   const fg = createFormGroup({
-    email: ['', { validators: [required] }],
+    email: ['', { validators: [V.required] }],
     name: '',
-    password: ['', { validators: [required] }],
-    acceptTerms: [false, { validators: [isTrue] }]
+    password: ['', { validators: [V.required] }],
+    acceptTerms: [false, { validators: [V.is(true)] }]
   });
   const [form, setForm] = fg.value;
   const validAll = fg.validAll;
@@ -199,7 +199,7 @@ Under the hood, the `formGroup` directive sets up the entire set of [SolidJS sig
 and initiates form control properties.
 
 Still, our form group needs to know which form controls belong to which form inputs.
-This is why we bind those together by assigning `formGroupName` property to form inputs
+This is why we bind those together by assigning `formControlName` property to form inputs
 with the same name, as defined for the form control.
 
 
@@ -526,7 +526,7 @@ const fg = createFormGroup({
 });
 const [dirty, setDirty] = fg.dirty;
 
-const changeDirtyForFirstName = () => setDirty(d => ({ ...d, firstName: false }));
+const markFirstNameAsPristine = () => setDirty(d => ({ ...d, firstName: false }));
 const logDirtyForFirstName = () => console.log(dirty().firstName);
 
 return (
@@ -538,8 +538,8 @@ return (
     </form>
 
     {/* 2️⃣ After the update, clicking this button marks the `firstName` */}
-    {/* form control as "dirty" again */}
-    <button onClick={changeDirtyForFirstName}>
+    {/* form control as "pristine" again */}
+    <button onClick={markFirstNameAsPristine}>
       Change dirty
     </button>
     {/* 3️⃣ Clicking this button logs `false`, as we set the property to it ourselves */}
