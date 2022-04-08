@@ -44,7 +44,9 @@
   "homepage": "https://github.com/kajetansw/solar-forms#readme",
   "contributors": [
     {
-      "name": "Kajetan Świątek"
+      "name": "Kajetan Świątek",
+      "email": "kajetan.swiatek@gmail.com",
+      "url": "https://kajetan.dev"
     }
   ],
   "peerDependencies": {
