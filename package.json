@@ -28,8 +28,9 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "lint": "eslint .",
+    "lint": "eslint --fix {src,test}/**/*",
     "prepublishOnly": "npm run build",
+    "prettier": "prettier --write {src,test}/**/*",
     "test": "jest"
   },
   "repository": {

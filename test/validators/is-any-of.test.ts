@@ -1,7 +1,5 @@
 import { Validators as V } from '../../src';
 import { getFormControlWithValue } from './common';
-import getRandomNumber from '../utils/get-random-number';
-import getRandomString from '../utils/get-random-string';
 
 describe('"isAnyOf" validator', () => {
   it('should return "null" if form control value is "string" and matches one of values provided in validator', () => {

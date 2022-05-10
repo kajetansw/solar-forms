@@ -105,16 +105,12 @@ const TestApp = () => {
 
 describe('Reading and marking form controls and groups as touched or untouched', () => {
   let $validAll: HTMLElement;
-  let $inputValue1: HTMLInputElement;
   let $inputValue2: HTMLInputElement;
   let $inputValue3: HTMLInputElement;
-  let $inputValue41: HTMLInputElement;
   let $inputValue42: HTMLInputElement;
   let $inputValue43: HTMLInputElement;
-  let $btnChangeValue1: HTMLElement;
   let $btnChangeValue2: HTMLElement;
   let $btnChangeValue3: HTMLElement;
-  let $btnChangeValue41: HTMLElement;
   let $btnChangeValue42: HTMLElement;
   let $btnChangeValue43: HTMLElement;
 
@@ -122,16 +118,12 @@ describe('Reading and marking form controls and groups as touched or untouched',
     render(() => <TestApp />);
 
     $validAll = await screen.findByTestId('valid-all');
-    $inputValue1 = (await screen.findByTestId('input-value1')) as HTMLInputElement;
     $inputValue2 = (await screen.findByTestId('input-value2')) as HTMLInputElement;
     $inputValue3 = (await screen.findByTestId('input-value3')) as HTMLInputElement;
-    $inputValue41 = (await screen.findByTestId('input-value41')) as HTMLInputElement;
     $inputValue42 = (await screen.findByTestId('input-value42')) as HTMLInputElement;
     $inputValue43 = (await screen.findByTestId('input-value43')) as HTMLInputElement;
-    $btnChangeValue1 = await screen.findByTestId('btn-change-value1');
     $btnChangeValue2 = await screen.findByTestId('btn-change-value2');
     $btnChangeValue3 = await screen.findByTestId('btn-change-value3');
-    $btnChangeValue41 = await screen.findByTestId('btn-change-value41');
     $btnChangeValue42 = await screen.findByTestId('btn-change-value42');
     $btnChangeValue43 = await screen.findByTestId('btn-change-value43');
   });
