@@ -29,6 +29,7 @@
   "scripts": {
     "build": "rollup -c",
     "lint": "eslint --fix {src,test}/**/*",
+    "prepare": "husky install",
     "prepublishOnly": "npm run build",
     "prettier": "prettier --write {src,test}/**/*",
     "test": "jest"
@@ -66,7 +67,9 @@
     "@typescript-eslint/parser": "^5.12.1",
     "eslint": "^7.32.0",
     "eslint-plugin-solid": "^0.4.4",
+    "husky": "^8.0.1",
     "jest": "^27.5.1",
+    "lint-staged": "^12.4.1",
     "prettier": "^2.5.1",
     "rollup": "^2.58.0",
     "rollup-plugin-filesize": "^9.1.2",
@@ -81,5 +84,8 @@
   "engines": {
     "node": ">=14.16.0",
     "npm": ">=6.14.8"
+  },
+  "lint-staged": {
+    "{src,test}/**/*": "npm run lint && npm run prettier"
   }
 }
