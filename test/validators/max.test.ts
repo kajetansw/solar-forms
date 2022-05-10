@@ -16,7 +16,7 @@ describe('"max" validator', () => {
 
   it('should return error if form control value is bigger than maximum from validator', () => {
     const formControl = getFormControlWithValue(10);
-    const output = V.max(0)(formControl);
+    const output = V.max(1000)(formControl);
 
     expect(output?.max).toBeTruthy();
   });
