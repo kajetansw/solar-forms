@@ -44,7 +44,7 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
       } else {
         const $formControl = getFormControl($child);
 
-        if ($formControl) {
+        if ($formControl instanceof HTMLInputElement) {
           const formControlName = getFormControlName($formControl);
 
           if (formControlName) {
@@ -52,7 +52,7 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
               throw new FormControlInvalidKeyError(formControlName);
             }
 
-            // Set form control as disabled or enabled
+            // Set <input> as disabled or enabled
             createEffect(() => {
               const disabledValue = getDisabled()[formControlName];
               if (isBoolean(disabledValue)) {
@@ -60,7 +60,7 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
               }
             });
 
-            // Set value of form control element
+            // Set value of <input> element
             createRenderEffect(() => {
               const inputType = getInputValueType($formControl.type);
 
@@ -175,7 +175,47 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
             };
             $formControl.addEventListener('input', onInput);
 
-            // Mark as touched on blur event
+            // Mark <input> as touched on blur event
+            const onBlur = () => setToTouchedIfUntouched(formControlName);
+            $formControl.addEventListener('blur', onBlur);
+
+            // Clean up
+            onCleanup(() => $formControl.removeEventListener('input', onInput));
+            onCleanup(() => $formControl.removeEventListener('blur', onBlur));
+          }
+        } else if ($formControl instanceof HTMLSelectElement) {
+          const formControlName = getFormControlName($formControl);
+
+          if (formControlName) {
+            if (!formGroupKeys.includes(formControlName)) {
+              throw new FormControlInvalidKeyError(formControlName);
+            }
+
+            // Set <select> as disabled or enabled
+            createEffect(() => {
+              const disabledValue = getDisabled()[formControlName];
+              if (isBoolean(disabledValue)) {
+                $formControl.disabled = disabledValue;
+              }
+            });
+
+            // Set value of <select> element
+            createRenderEffect(() => {
+              const formValue = value()[formControlName];
+              if (isString(formValue) || isNull(formValue)) {
+                $formControl.value = formValue as string;
+              } else {
+                throw new FormControlInvalidTypeError(formControlName, 'string', formValue);
+              }
+            });
+
+            const onInput = () => {
+              setValue((s) => ({ ...s, [formControlName]: $formControl.value }));
+              setToDirtyIfPristine(formControlName);
+            };
+            $formControl.addEventListener('input', onInput);
+
+            // Mark <select> as touched on blur event
             const onBlur = () => setToTouchedIfUntouched(formControlName);
             $formControl.addEventListener('blur', onBlur);
 
