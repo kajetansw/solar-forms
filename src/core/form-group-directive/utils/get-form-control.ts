@@ -33,6 +33,9 @@ export function getFormControl(child: JSX.Element): HTMLInputElement | HTMLSelec
     if (isInput(control)) {
       return control;
     }
+    if (isSelect(control)) {
+      return control;
+    }
   }
   return null;
 }
