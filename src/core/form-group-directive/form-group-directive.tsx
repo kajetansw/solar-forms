@@ -209,18 +209,18 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
               }
             });
 
-            const onInput = () => {
+            const onChange = () => {
               setValue((s) => ({ ...s, [formControlName]: $formControl.value }));
               setToDirtyIfPristine(formControlName);
             };
-            $formControl.addEventListener('input', onInput);
+            $formControl.addEventListener('change', onChange);
 
             // Mark <select> as touched on blur event
             const onBlur = () => setToTouchedIfUntouched(formControlName);
             $formControl.addEventListener('blur', onBlur);
 
             // Clean up
-            onCleanup(() => $formControl.removeEventListener('input', onInput));
+            onCleanup(() => $formControl.removeEventListener('change', onChange));
             onCleanup(() => $formControl.removeEventListener('blur', onBlur));
           }
         }
