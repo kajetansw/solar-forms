@@ -1,4 +1,3 @@
-export * from './is-array-element';
 export * from './is-boolean';
 export * from './is-date';
 export * from './is-null';
