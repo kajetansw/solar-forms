@@ -1,11 +1,11 @@
 import { createFormGroup, formGroup } from '../../src';
 import { screen, render } from 'solid-testing-library';
 import userEvent from '@testing-library/user-event';
-import getRandomTeam, { TEAMS } from '../utils/get-random-team';
+import { Team, TEAMS } from '../utils/get-random-team';
 import { For } from 'solid-js';
 
-const INIT_INPUT_VALUE = getRandomTeam() as string | null;
-const TEST_INPUT_VALUE = getRandomTeam() as string | null;
+const INIT_INPUT_VALUE = TEAMS[0] as Team | null;
+const TEST_INPUT_VALUE = TEAMS[1] as Team | null;
 const NULL = String(null);
 
 const TestApp = () => {
@@ -82,8 +82,7 @@ describe('Label with input element as child', () => {
   describe('should init value with the one provided in createFormGroup', () => {
     it('when value is string', () => {
       expect($valueString.innerHTML).toBe(INIT_INPUT_VALUE);
-      // TODO this fails, although it works when tested manually
-      // expect($selectWithString.value).toBe(INIT_INPUT_VALUE);
+      expect($selectWithString.value).toBe(INIT_INPUT_VALUE);
     });
 
     it('when form control value is null, first option is selected', () => {
