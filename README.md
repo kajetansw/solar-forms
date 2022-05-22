@@ -1739,6 +1739,10 @@ declare module 'solid-js' {
       formControlName?: string;
     }
 
+    interface SelectHTMLAttributes<T> {
+      formControlName?: string;
+    }
+
     interface HTMLAttributes<T> {
       formGroupName?: string;
     }
