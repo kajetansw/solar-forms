@@ -21,10 +21,3 @@ export class FormControlInvalidTypeError extends Error {
     );
   }
 }
-
-export class FormControlInvalidNestedGroupError extends Error {
-  constructor(formGroupName: string | undefined) {
-    const prefix = `"${formGroupName}" form group name` ?? 'One of the form group names';
-    super(`${prefix} does not match any key from the form group value object.`);
-  }
-}
