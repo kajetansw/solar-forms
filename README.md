@@ -121,7 +121,7 @@ yarn add solar-forms
       * [`isAnyOf` validator](#isanyof-validator)
       * [`email` validator](#email-validator)
       * [`pattern` validator](#pattern-validator)
-  * [Binding form controls to different types of input elements](#binding-form-controls-to-different-types-of-input-elements)
+  * [Binding form controls to different types of `<input>` elements](#binding-form-controls-to-different-types-of-input-elements)
     + [Type of "text"](#type-of-text)
     + [Type of "email"](#type-of-email)
     + [Type of "password"](#type-of-password)
@@ -134,6 +134,7 @@ yarn add solar-forms
     + [Type of "time"](#type-of-time)
     + [Type of "checkbox"](#type-of-checkbox)
     + [Type of "radio"](#type-of-radio)
+  * [Binding form controls to `<select>` element](#binding-form-controls-to-select-element)
   * [Form control errors](#form-control-errors)
     + [Form control name does not match any key from form group](#form-control-name-does-not-match-any-key-from-form-group)
     + [Form control type does not match the type of an input element](#form-control-type-does-not-match-the-type-of-an-input-element)
@@ -1542,6 +1543,42 @@ return (
 );
 ```
 
+### Binding form controls to `<select>` element
+
+You can bind `string` values to the `<select>` element. You can change value
+of the element by choosing one of the predefined options:
+
+```tsx
+type Country = 'Poland' | 'Spain' | 'Germany';
+interface CustomFormGroup {
+  country: Country | '';
+}
+
+// Component definition
+
+const fg = createFormGroup<CustomFormGroup>({
+  // 1️⃣ Default value is set here
+  country: '',
+});
+
+return (
+  <form use:formGroup={fg}>
+    {/* 2️⃣ Choosing one of available options sets form control value to */}
+    {/* a value assigned to specific <option> element */}
+    <label htmlFor="country-select">
+      Country
+      <select name="country" id="country-select" formControlName="country">
+        <option value="">--Please choose an option--</option>
+        <option value="Poland">Poland</option>
+        <option value="Spain">Spain</option>
+        <option value="Germany">Germany</option>
+      </select>
+    </label>
+  </form>
+);
+```
+
+
 ### Form control errors
 
 To ensure that the form group defined by us matches the form structure in our template, some
@@ -1716,8 +1753,8 @@ related to new HTML attributes.
 ## Roadmap
 
 - [x] Creating and exporting [built-in validator functions](https://angular.io/api/forms/Validators) for common usage
+- [x] Support for `<select>` element
 - [ ] Support for `<textarea>` element
-- [ ] Support for `<select>` element
 - [ ] Defining and using [form arrays](https://angular.io/guide/reactive-forms#creating-dynamic-forms)
 - [ ] Support for [async validators](https://angular.io/api/forms/AsyncValidatorFn)
 - [ ] Documentation for API

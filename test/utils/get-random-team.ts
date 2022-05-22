@@ -1,4 +1,7 @@
-export default function getRandomTeam(): 'engineering' | 'product' | 'testing' {
-  const validTeams = ['engineering', 'product', 'testing'] as const;
-  return validTeams[Math.floor(Math.random() * 3)];
+export const TEAMS = ['engineering', 'product', 'testing'] as const;
+
+export type Team = typeof TEAMS[number];
+
+export default function getRandomTeam(): Team {
+  return TEAMS[Math.floor(Math.random() * TEAMS.length)];
 }
