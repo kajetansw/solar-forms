@@ -1549,16 +1549,13 @@ You can bind `string` values to the `<select>` element. You can change value
 of the element by choosing one of the predefined options:
 
 ```tsx
-type Country = 'Poland' | 'Spain' | 'Germany';
-interface CustomFormGroup {
-  country: Country | '';
-}
+type CountryOption = '' | 'Poland' | 'Spain' | 'Germany';
 
 // Component definition
 
 const fg = createFormGroup<CustomFormGroup>({
   // 1️⃣ Default value is set here
-  country: '',
+  country: '' as CountryOption,
 });
 
 return (
