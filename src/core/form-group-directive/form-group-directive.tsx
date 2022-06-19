@@ -227,6 +227,68 @@ const formGroupForSelect = <I extends CreateFormGroupInput>(
   }
 };
 
+const formGroupForTextArea = <I extends CreateFormGroupInput>(
+  $formControl: HTMLTextAreaElement,
+  formGroupSignal: () => FormGroup<I>
+) => {
+  const [value, setValue] = formGroupSignal().value;
+  const [getDisabled] = formGroupSignal().disabled;
+  const [dirty, setDirty] = formGroupSignal().dirty;
+  const [touched, setTouched] = formGroupSignal().touched;
+  const setToDirtyIfPristine = (formControlName: string | undefined) => {
+    if (formControlName && !dirty()[formControlName]) {
+      setDirty((s) => ({ ...s, [formControlName]: true }));
+    }
+  };
+  const setToTouchedIfUntouched = (formControlName: string | undefined) => {
+    if (formControlName && !touched()[formControlName]) {
+      setTouched((s) => ({ ...s, [formControlName]: true }));
+    }
+  };
+
+  const formGroupKeys = Object.keys(value());
+  const formControlName = getFormControlName($formControl);
+
+  if (formControlName) {
+    if (!formGroupKeys.includes(formControlName)) {
+      throw new FormControlInvalidKeyError(formControlName);
+    }
+
+    // Set <textarea> as disabled or enabled
+    createEffect(() => {
+      const disabledValue = getDisabled()[formControlName];
+      if (isBoolean(disabledValue)) {
+        $formControl.disabled = disabledValue;
+      }
+    });
+
+    // Set value of <textarea> element
+    createRenderEffect(() => {
+      const formValue = value()[formControlName];
+      if (isString(formValue) || isNull(formValue)) {
+        $formControl.value = formValue as string;
+      } else {
+        throw new FormControlInvalidTypeError(formControlName, 'string', formValue);
+      }
+    });
+
+    // Update form control values and mark as dirty on user input
+    const onInput = () => {
+      setValue((s) => ({ ...s, [formControlName]: $formControl.value }));
+      setToDirtyIfPristine(formControlName);
+    };
+    $formControl.addEventListener('input', onInput);
+
+    // Mark <textarea> as touched on blur event
+    const onBlur = () => setToTouchedIfUntouched(formControlName);
+    $formControl.addEventListener('blur', onBlur);
+
+    // Clean up
+    onCleanup(() => $formControl.removeEventListener('input', onInput));
+    onCleanup(() => $formControl.removeEventListener('blur', onBlur));
+  }
+};
+
 export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroupSignal: () => FormGroup<I>) {
   for (const $child of el.children) {
     const formGroupName = getFormGroupName($child);
@@ -240,6 +302,8 @@ export function formGroup<I extends CreateFormGroupInput>(el: Element, formGroup
         formGroupForInput($formControl, formGroupSignal);
       } else if ($formControl instanceof HTMLSelectElement) {
         formGroupForSelect($formControl, formGroupSignal);
+      } else if ($formControl instanceof HTMLTextAreaElement) {
+        formGroupForTextArea($formControl, formGroupSignal);
       }
     }
   }

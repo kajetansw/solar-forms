@@ -12,28 +12,28 @@ function isSelect(child: JSX.Element): child is HTMLSelectElement {
   return child instanceof HTMLSelectElement;
 }
 
+function isTextArea(child: JSX.Element): child is HTMLTextAreaElement {
+  return child instanceof HTMLTextAreaElement;
+}
+
 function getAssociatedControlForLabel(label: HTMLLabelElement) {
   return Array.from(label.children).find((c) => c.id === label.htmlFor);
 }
 
 /**
  * Extracts form control from the HTML element. Identifies:
- * - standalone `input` elements
- * - `label`s with `input`s as children bound by `htmlFor` attribute.
+ * - standalone `input`, `select` and `textarea` elements
+ * - `label`s with form elements as children bound by `htmlFor`/`for` attribute.
  */
-export function getFormControl(child: JSX.Element): HTMLInputElement | HTMLSelectElement | null {
-  if (isInput(child)) {
-    return child;
-  }
-  if (isSelect(child)) {
+export function getFormControl(
+  child: JSX.Element
+): HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null {
+  if (isInput(child) || isSelect(child) || isTextArea(child)) {
     return child;
   }
   if (isLabel(child)) {
     const control = getAssociatedControlForLabel(child);
-    if (isInput(control)) {
-      return control;
-    }
-    if (isSelect(control)) {
+    if (isInput(control) || isSelect(control) || isTextArea(control)) {
       return control;
     }
   }
