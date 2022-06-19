@@ -17,6 +17,10 @@ declare module 'solid-js' {
       formControlName?: string;
     }
 
+    interface TextareaHTMLAttributes<T> {
+      formControlName?: string;
+    }
+
     interface HTMLAttributes<T> {
       formGroupName?: string;
     }
