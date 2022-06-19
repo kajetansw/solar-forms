@@ -135,6 +135,7 @@ yarn add solar-forms
     + [Type of "checkbox"](#type-of-checkbox)
     + [Type of "radio"](#type-of-radio)
   * [Binding form controls to `<select>` element](#binding-form-controls-to-select-element)
+  * [Binding form controls to `<textarea>` element](#binding-form-controls-to-textarea-element)
   * [Form control errors](#form-control-errors)
     + [Form control name does not match any key from form group](#form-control-name-does-not-match-any-key-from-form-group)
     + [Form control type does not match the type of an input element](#form-control-type-does-not-match-the-type-of-an-input-element)
@@ -1553,7 +1554,7 @@ type CountryOption = '' | 'Poland' | 'Spain' | 'Germany';
 
 // Component definition
 
-const fg = createFormGroup<CustomFormGroup>({
+const fg = createFormGroup({
   // 1️⃣ Default value is set here
   country: '' as CountryOption,
 });
@@ -1571,6 +1572,28 @@ return (
         <option value="Germany">Germany</option>
       </select>
     </label>
+  </form>
+);
+```
+
+### Binding form controls to `<textarea>` element
+
+`textarea` element is a string-based form control. You can
+define your form control's default value as `string` or `null`:
+
+```tsx
+// Component definition
+
+const fg = createFormGroup({
+  // 1️⃣ Default value is set here
+  bio: '',
+});
+
+return (
+  <form use:formGroup={fg}>
+    <label htmlFor="bio">Bio</label>
+    {/* 2️⃣ Here we bind form control to form group */}
+    <textarea name="bio" id="bio" formControlName="bio" />
   </form>
 );
 ```
